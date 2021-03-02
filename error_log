@@ -1,0 +1,12 @@
+[17-Jul-2019 08:30:51 Asia/Phnom_penh] PHP Fatal error:  Uncaught Error: Call to undefined function mysql_pconnect() in /home/les08d13v9ud/public_html/sys/system/database/drivers/mysql/mysql_driver.php:91
+Stack trace:
+#0 /home/les08d13v9ud/public_html/sys/system/database/DB_driver.php(115): CI_DB_mysql_driver->db_pconnect()
+#1 /home/les08d13v9ud/public_html/sys/system/database/DB.php(148): CI_DB_driver->initialize()
+#2 /home/les08d13v9ud/public_html/sys/system/core/Loader.php(346): DB(Array, NULL)
+#3 /home/les08d13v9ud/public_html/sys/system/core/Loader.php(1171): CI_Loader->database()
+#4 /home/les08d13v9ud/public_html/sys/system/core/Loader.php(152): CI_Loader->_ci_autoloader()
+#5 /home/les08d13v9ud/public_html/sys/system/core/Controller.php(51): CI_Loader->initialize()
+#6 /home/les08d13v9ud/public_html/sys/system/core/CodeIgniter.php(308): CI_Controller->__construct()
+#7 /home/les08d13v9ud/public_html/sys/index.php(204): require_once('/home/les08d13v...')
+#8 {main}
+  thrown in /home/les08d13v9ud/public_html/sys/system/database/drivers/mysql/mysql_driver.php on line 91

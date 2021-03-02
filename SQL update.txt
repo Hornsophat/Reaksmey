@@ -1,0 +1,16 @@
+
+// Add `duration` field to `tbl_reservation` after `staying`
+//ALTER TABLE `tbl_reservation`
+//ADD COLUMN `duration`  varchar(50) NULL DEFAULT 0 AFTER `staying`;
+
+--------------------------------------------------------------------
+
+// add canceled field to tbl_reservation after price
+ALTER TABLE `tbl_reservation`
+ADD COLUMN `canceled`  int(2) NULL DEFAULT 0 AFTER `price`;
+--------------------------------------------------------------------
+//ALTER TABLE `tbl_staying`
+//MODIFY COLUMN `price`  float NOT NULL AFTER `time`;
+---------------------------------------------------------------------
+ALTER TABLE `tbl_staying`
+MODIFY COLUMN `price`  float(11,4) NULL DEFAULT NULL AFTER `time`;

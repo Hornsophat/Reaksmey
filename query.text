@@ -1,0 +1,72 @@
+CREATE TABLE `NewTable` (
+`id`  int(11) NOT NULL ,
+`date`  datetime NULL ON UPDATE CURRENT_TIMESTAMP ,
+`ex_type_id`  int(11) NULL ,
+`amount`  float(45,0) NULL ,
+`note`  text NULL ,
+PRIMARY KEY (`id`)
+)
+;
+===============================================================================
+CREATE TABLE `NewTable` (
+`id`  int(11) NOT NULL ,
+`ex_type`  varchar(45) NULL ,
+`note`  varchar(45) NULL ,
+PRIMARY KEY (`id`)
+)
+;
+============================================================
+ALTER TABLE `tbl_reservation`
+ADD COLUMN `deposit`  decimal(54,0) NULL AFTER `canceled`;
+======================================
+CREATE TABLE `NewTable` (
+`id`  int(11) NOT NULL AUTO_INCREMENT ,
+`checkin_id`  int(11) NULL ,
+`room_num`  int(11) NULL ,
+`room_price`  decimal(45,2) NULL ,
+PRIMARY KEY (`id`)
+)
+;
+
+
+====================tbl_multiReservation=======================
+CREATE TABLE `NewTable` (
+`id`  int(11) NOT NULL AUTO_INCREMENT ,
+`reserv_id`  int(11) NULL ,
+`room_id`  int(11) NULL ,
+`room_number`  int(11) NULL ,
+`status`  varchar(45) NULL ,
+PRIMARY KEY (`id`)
+)
+;
+=================alter tbl_multiReservation======================
+ALTER TABLE `tbl_multiReservation`
+ADD COLUMN `room_price`  decimal(10,2) NULL AFTER `status`;
+
+==================alert ==========================
+ALTER TABLE `tbl_reservation`
+MODIFY COLUMN `room_id`  varchar(45) NULL DEFAULT NULL AFTER `Customer_id`;
+
+==================== tbl_bank==========================
+CREATE TABLE `NewTable` (
+`id`  int(11) NOT NULL AUTO_INCREMENT ,
+`account_name`  varchar(45) NULL ,
+`account_number`  varchar(45) NULL ,
+`status`  varchar(255) NULL ,
+PRIMARY KEY (`id`)
+)
+;
+
+==============================
+ALTER TABLE `tbl_bank`
+ADD COLUMN `date`  datetime NULL ON UPDATE CURRENT_TIMESTAMP AFTER `status`;
+
+====================================
+ALTER TABLE `tbl_multireservation`
+MODIFY COLUMN `room_number`  varchar(45) NULL DEFAULT NULL AFTER `room_id`;
+==================
+ALTER TABLE `tbl_reservation`
+MODIFY COLUMN `deposit_type`  int(11) NULL DEFAULT NULL AFTER `deposit`;
+========================
+ALTER TABLE `tbl_checkin`
+ADD COLUMN `bank_amount`  decimal(11,2) NULL AFTER `account_number`;
