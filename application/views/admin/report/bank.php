@@ -83,7 +83,7 @@
         <div>
             <?php date_default_timezone_set("Asia/Phnom_penh"); ?>
             <div class="row" style="text-align: center;">
-              <img class="" src="<?php echo site_url('assets/images/domnakneak1.png'); ?>" alt="Raksmey Monorom Hotel" style='text-align: center; clear: both;margin-top:-20px;'>
+              <img class="" src="<?php echo site_url('assets/images/photo_2021-02-01_07-59-25.jpg'); ?>" alt="Raksmey Monorom Hotel" style='text-align: center; clear: both;margin-top:-20px;'>
 
             </div>
             <div class="row">

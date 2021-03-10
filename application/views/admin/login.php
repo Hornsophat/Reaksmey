@@ -34,7 +34,7 @@
       <div class="wrap-login100">
         <form class="login100-form validate-form" action="<?php echo base_url(); ?>user/validate_credentials" method="POST">
            <span style="font-family:Khmer OS Muol Light;font-size:35px;" class="login100-form-title p-b-43">
-            សូមស្វាគមន៍ សណ្ឋាគារ រស្មីមនោរម្យ
+            WELCOME ROTHSINGVILLA HOTEL
           </span>
           <span class="login100-form-title p-b-43">
             Login to continue
@@ -94,7 +94,7 @@
           ?>
         </form>
 
-        <div class="login100-more" style="background-image: url('<?php echo base_url(); ?>assets/login/images/domnakneak1.jpg');">
+        <div class="login100-more" style="background-image: url('<?php echo base_url(); ?>assets/login/images/photo_2021-02-01_07-59-25.jpg');">
         </div>
       </div>
     </div>
