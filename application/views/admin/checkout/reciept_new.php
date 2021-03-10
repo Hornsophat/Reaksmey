@@ -111,7 +111,7 @@
             <div class="no-print"></div>
             <div id="receipt-data">
                 <div class="text-center" style="text-align: center; clear: both; padding-bottom:0px;margin-top:22px">
-                   <div style="margin-left:100px"> <img class="" src="<?php echo site_url('assets/images/domnakneak3.png'); ?>" alt="Palm River Hotel" style=' float: left; clear: both;margin-top:-20px;border-radius: 10px;'></div>
+                   <div style="margin-left:100px"> <img class="" src="<?php echo site_url('assets/images/photo_2021-02-01_07-59-25.jpg'); ?>" alt="Palm River Hotel" style=' float: left; clear: both;margin-top:-20px;border-radius: 10px;'></div>
                    <br><br><br><br><br>
                     <b><h3 style="text-transform:uppercase; font-family:'Khmer OS Muol Light'; color: #674343; font-size: 20px; padding-top:20px;">សណ្ឋាគារ រស្មីមនោរម្យ</h3><b>
                     <h3 style="text-transform:uppercase; font-family:'Elephant'; color: #674343; font-size: 12px; padding-top:5px;">RAKSMEY MONOROM HOTEL</h3>
