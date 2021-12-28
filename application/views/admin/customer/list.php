@@ -51,8 +51,6 @@
             echo form_close();
             ?>
 
-          </div>
-
           <table class="table table-striped table-bordered table-condensed">
             <thead>
               <tr>
@@ -63,6 +61,8 @@
                 <th class="yellow header headerSortDown"><?php echo lang('Passport / ID Card');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Mobile');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Email');?></th>
+                <th class="yellow header headerSortDown"><?php echo lang('roomtype');?></th>
+                <th class="yellow header headerSortDown"><?php echo lang('room');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Verified');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Action');?></th>
               </tr>
@@ -85,6 +85,8 @@
                 echo '<td>'.$row['Passport'].'</td>';
                 echo '<td>'.$row['Mobile'].'</td>';
                 echo '<td>'.$row['email'].'</td>';
+                echo '<td>'.$row['type'].'</td>';
+                echo '<td>'.$row['room_no'].'</td>';
                 if ($row['verifyed']==0) {
                   echo '<td style="text-align:center;"><span class="label label-danger" id="' . $row['id'] . '">Not Verifyed</span></td>';
                 } else if ($row['verifyed']==1) {
@@ -99,10 +101,14 @@
 				        echo " " ;
                 echo 
                 '<a href="'.site_url("admin").'/customer/update/'.$row['id'].'" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-edit"></span></a>                   
+                <a href="'.site_url("admin").'/customer/view/'.$row['id'].'" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon	glyphicon glyphicon-list-alt"></span></a>                   
                 <a href="'.site_url("admin").'/customer/delete/'.$row['id'].'" class="btn btn-sm btn-danger" data-toggle="tooltip" title="Delete" id="btnDel"><span class="glyphicon glyphicon-trash"></span></a>
+                <a style="display:none" href="'.site_url("assets").'/pdf/'.$row['id'].'.pdf" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Delete" id="btnDel"><span >Contract</span></a>
                 </td>';
                 echo '</tr>';
+                
               }
+              
               ?>      
             </tbody>
           </table>

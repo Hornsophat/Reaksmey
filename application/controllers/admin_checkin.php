@@ -159,7 +159,7 @@ class Admin_Checkin extends CI_Controller {
             $config['total_rows'] = $data['count_checkin'];
 
         }//!isset($search_string) && !isset($order)
-        $data['checkinfield'] = $this->db->select(array('id','reserv_id','customer_id','date_in','date_out','room_no','discount','checkin_type'))->get('tbl_checkin')->result_array();
+        $data['checkinfield'] = $this->db->select(array('id','reserv_id','customer_id','date_in','date_out','room_no','discount','checkin_type','pay'))->get('tbl_checkin')->result_array();
          
         //initializate the panination helper 
         $this->pagination->initialize($config);
@@ -689,71 +689,122 @@ class Admin_Checkin extends CI_Controller {
     {
         //checkin id 
         $id = $this->uri->segment(4);
-
+       
         //checkin data 
-        $data['checkin'] = $checkin = $this->checkin_model->get_checkin_by_id($id);
-
-        //rooms data
-        $data['staytime'] = $this->staytime_model->get_staytime_all($checkin[0]['roomtype']);
-        $data['room_type'] = $this->roomtype_model->get_roomtype_all();
-        $data['free_rooms'] = $this->room_model->get_room_type($checkin[0]['roomtype']);
-        $data['customer'] = $this->checkin_model->get_customer();
-  
+        //   $data['checkin'] = $checkin = $this->checkin_model->get_checkin_by_id($id);
+        // $data['staytime'] = $this->staytime_model->get_staytime_all($checkin[0]['roomtype']);
+        // $data['room_type'] = $this->roomtype_model->get_roomtype_all();
+        // $data['free_rooms'] = $this->room_model->get_room_type($checkin[0]['roomtype']);
+        // $data['customer'] = $this->checkin_model->get_customer();
         //if save button was clicked, get the data sent via post
         if ($this->input->server('REQUEST_METHOD') === 'POST')
         {
             $data_to_store = array(
-                'customer_id' => $this->input->post('customer_id'),
-                'date_in' => $this->input->post('date_in'),
-                'date_out' => $this->input->post('date_out'),
-                'checkin_type' => $this->input->post('chtype'),
-                'staying' => $this->input->post('staying'),
+                'customer_id'   => $this->input->post('customer_id'),
+                'date_in'       => date('Y-m-d H:i:s',strtotime($this->input->post('date_in').''.date('H:i:s'))),
+                'date_out'      => $this->input->post('date_out'),
+                'room_no'      => $this->input->post('room_no'),
+                'staying'       => $this->input->post('duration'),
                 'extra_charges' => $this->input->post('extra_charges'),
-                'discount' => $this->input->post('discount')
+                'discount'      => $this->input->post('discount'),
+                'total'      => $this->input->post('total'),
+                'price'      => $this->input->post('Price'),
+                'deposit'      => $this->input->post('deposit'),
+                'grand_total'      => $this->input->post('grand_total'),
+                'bank_id'       =>$this->input->post('bank'),
+                'account_name'       =>$this->input->post('account_name'),
+                'account_number'       =>$this->input->post('account_number'),
+                'bank_amount'       =>$this->input->post('bank_amount'),
+                'note'       =>$this->input->post('note'),
+                'time'          => '',
+                'checkin_type'  => $this->input->post('chtype'),
+                'user'          => $this->session->userdata('user_name'),
             );
 
             //update available room if room is changed
-            if($checkin[0]['room_no'] != $this->input->post('room_number')) {
-                $this->db->where('id', $checkin[0]['room_no']);
-                $this->db->update('tbl_room', array('status'=>0));
-                $data_to_store['room_no'] = $this->input->post('room_number');
-            }
+            // if($checkin[0]['room_no'] != $this->input->post('room_number')) {
+            //     $this->db->where('id', $checkin[0]['room_no']);
+            //     $this->db->update('tbl_room', array('status'=>0));
+            //     $data_to_store['room_no'] = $this->input->post('room_number');
+            // }
 
+              
             $dis   = $this->input->post('discount');
-            $room  = $this->input->post('roomtype');
-            $stay  = $this->input->post('staying');
-            $checkin_type = $this->input->post("chtype");
-            $price = $this->checkin_model->get_price($checkin_type);
-            
+            $room  = $this->input->post('chtype');
+            $stay  = $this->input->post('duration');
+
+            $price = $this->checkin_model->get_price($room);
+
+            $percentage = '%';
+            $discount = $this->input->post('discount');
+            if($discount !='' || $discount > 0){
+                $discount_fix =  $discount;
+                if (isset($discount_fix)) {
+                    $dis_fix = $discount_fix;
+                    $dpos = strpos($dis_fix, $percentage);
+                    if ($dpos !== false) {
+                       $data_to_store['percent_dis'] = $discount;
+                    } else {
+                      $data_to_store['discount'] = $discount;
+                    }
+                }
+            }
             $p = $price->price * $stay;
+
+
             $per = ($p * $dis) / 100;
             $amount = $p - $per;
+            $mul_det = $this->checkin_model->get_room_by_id($this->input->post('room_no'))->room_no;
 
             $detail = array(
-                'price' => $price->price,
-                'qty' => $this->input->post('staying'),
-                'item_name' => "staying",
-                'date_order' => date('Y-m-d'),
-                'discount' => $this->input->post('discount'),
-                'amount' => $this->input->post('total'),
-                'current_date' => date('Y-m-d')
+                        'price'        => $price->price,
+                        'room_id'      => $this->input->post('room_no'),
+                        'room_type'    => $this->input->post('roomtype'),
+                        'room_no'        => $mul_det,
+                        'qty'          => $this->input->post('duration'),
+                        'item_name'    => "staying",
+                        'date_order'   => date('Y-m-d H:i:s'),
+                        'discount'     => $this->input->post('discount'),
+                        'amount'       => $this->input->post('total'),
+                        'current_date' => date('Y-m-d H:i:s'),
+                        'price_more'   => $this->input->post('Price')
             );
                 
             //if the insert has returned true then we show the flash message
-            if($this->checkin_model->update_checkin($id, $data_to_store, $detail) == TRUE){
-                $data['flash_message'] = TRUE; 
-            }else{
-                $data['flash_message'] = FALSE; 
-            }
-            //redirect('admin/checkin/update/'.$id.'');
+            
+          
+            if($this->checkin_model->update_checkin($data_to_store,$detail,$id)){
+                $data['flash_message'] = TRUE;
+                    $this->session->set_flashdata(array(
+                            'message' => "Update Checkin Success !!!!", 
+                            'alert-type' => 'success'
+                        )
+                );
+         
+            redirect('admin/checkin');
+        }else{
+            $data['flash_message'] = FALSE; 
+        }
         }
 
         //if we are updating, and the data did not pass trough the validation
         //the code below wel reload the current data
 
-        //load the view
+           //rooms data
+           
+        //    $data['staytime'] = $this->staytime_model->get_staytime_all($checkin[0]['roomtype']);
+           $data['room_type'] = $this->roomtype_model->get_roomtype_all();
+        //    $data['free_rooms'] = $this->room_model->get_room_type($checkin[0]['roomtype']);
+           $data['free_rooms'] = $this->room_model->get_free_room();
+           $data['customer'] = $this->checkin_model->get_customer($id);
+           $data['banks'] = $this->checkin_model->getAllbanks();
+           $data['chec'] = $this->checkin_model->getAllchk($id);
+           //load the view
         $data['main_content'] = 'admin/checkin/edit';
         $this->load->view('includes/template', $data);
+        if ($data_to_store) {
+            redirect('admin/show_rooms');
+        }
 
     }//update
 
@@ -785,6 +836,10 @@ class Admin_Checkin extends CI_Controller {
         $id = $this->input->post('id');
         $name = $this->input->post('name');
         $qty = $this->input->post('qty');
+        $datefrom = $this->input->post('datefrom');
+        $dateto = $this->input->post('dateto');
+        $oldnum = $this->input->post('oldnum');
+        $newnum = $this->input->post('newnum');
         $dis = $this->input->post('dis');
         $price = $this->input->post('price');
         $total = $this->input->post('total');
@@ -793,6 +848,10 @@ class Admin_Checkin extends CI_Controller {
             'checkin_id' => $this->input->post('id'),
             'item_name' => $this->input->post('name'),
             'price' => $this->input->post('price'),
+            'date_start' => $this->input->post('datefrom'),
+            'date_end' => $this->input->post('dateto'),
+            'old_kw' => $this->input->post('oldnum'),
+            'new_kw' => $this->input->post('newnum'),
             'qty' => $this->input->post('qty'),
             'date_order' => date('y-m-d'),
             'discount' => $this->input->post('dis'),
@@ -859,14 +918,14 @@ class Admin_Checkin extends CI_Controller {
     function reciept($id=null, $cid=null)
     {
         // var_dump($id);die();
-        $pay = array('pay' => 'pay');
-        $this->db->where('id',$id)->update('tbl_checkin',$pay);
-        $status =  array('status' => 0);
-        $this->db->where('checkin_id',$id)->update('tbl_checkin_detail',$status); 
+        // $pay = array('pay' => 'pay');
+        // $this->db->where('id',$id)->update('tbl_checkin',$pay);
+        // $status =  array('status' => 0);
+        // $this->db->where('checkin_id',$id)->update('tbl_checkin_detail',$status); 
 
         
-        // $data['exchange_rate']=$this->currencies_model->get_exchange_rate();
-        $rate=$this->db->where('symbol','R')->get('tbl_currencies')->row()->cur_exchange;
+        $data['exchange_rate']=$this->currencies_model->get_exchange_rate();
+        $rate=$this->db->get('tbl_currencies')->row()->cur_exchange;
         // print_r($data['exchange_rate']);die();
         $items = $this->checkout_model->load_item($id);
         $data['items'] = $items['room'];
@@ -876,7 +935,7 @@ class Admin_Checkin extends CI_Controller {
         
         $data['row_checkin'] = $row_checkin;
         $data['customer'] =  $this->checkout_model->load_customer_name($cid);
-        $Rest = $this->load->database('rest', TRUE);
+        // $Rest = $this->load->database('rest', TRUE);
 
         // $sales = $Rest->query("SELECT s.* FROM sma_sales s
         //                                 WHERE s.hotel_checkin_id = '$id'
@@ -892,202 +951,7 @@ class Admin_Checkin extends CI_Controller {
         //   }
         // }
 
-        $checkin_data = $this->db->query("SELECT ch_dt.*,room_t.type,b.account_name as bank,ch.bank_amount 
-                                        FROM tbl_checkin_detail ch_dt 
-                                        LEFT JOIN tbl_roomtype room_t ON room_t.id = ch_dt.room_type
-                                        LEFT JOIN tbl_checkin ch 
-                                        ON ch.id=ch_dt.checkin_id
-                                        LEFT JOIN tbl_bank b 
-                                        ON b.id=ch.bank_id
-                                        WHERE ch_dt.checkin_id = '$id'")->result();
-        // var_dump($checkin_data);die;
-        $i = 1; 
-        $total = 0; 
-        $totals = 0; 
-        $tqty = 0;
-        $sales_total = 0;
-        $extra_ch = 0;
-        $data_table = "";
-        $room_no = "";
-        $extra_charge = 0;
-        $deposit_price = 0;
-        $total_pay = 0;
-        $total_pay_riel = 0;
-        $dicount_text = '';
-        $total_extra = 0;
-
-        $extra_charge = $row_checkin->extra_charges;
-                $data_table .= '<tbody>';
-        foreach ($checkin_data as $checkin) {
-            if($checkin->room_id > 0){
-                $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$i++.'</td>';
-                $data_table .= '<td colspan="2">'.$checkin->type.' ( '.$checkin->room_no.' )</td>';
-                $data_table .= '<td class="text-center">'.$checkin->amount.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
-                $data_table .= '<td class="text-right">'.number_format($checkin->amount,2).'</td>';
-                $total += str_replace(',', '', number_format($checkin->amount,2));
-                $data_table .= '</tr>';
-
-            }else{
-                $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$i++.'</td>';
-                $data_table .= '<td colspan="2">'.$checkin->item_name.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->price.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
-                $data_table .= '<td class="text-right">'.number_format($checkin->amount,2).'</td>';
-                $data_table .= '</tr>';
-                $total_extra += str_replace(',', '', number_format($checkin->amount,2));
-            }
-        }
-        if($extra_charge > 0){
-            $data_table .= '<tr>';
-            $data_table .= '<td class="text-center">'.$i++.'</td>';
-            $data_table .= '<td colspan="3"><span style="margin:0px 5px 0px 10px"></span>
-                        Extra Charges</td>';
-            $data_table .= '<td class="text-center"></td>';
-            $data_table .= '<td class="text-right">'.number_format($extra_charge,2).'</td>';
-            $data_table .= '</tr>';
-            $total_extra += str_replace(',', '', number_format($extra_charge,2));
-        }
-        if($sales){
-            foreach ($sales as $sale_res) {
-                $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$i++.'</td>';
-                $data_table .= '<td colspan="2">'.$sale_res->reference_no.'</td>';
-                $data_table .= '<td class="text-center">'.number_format($sale_res->grand_total,2).'</td>';
-                $data_table .= '<td class="text-center">1</td>';
-                $data_table .= '<td class="text-right">'.number_format($sale_res->grand_total,2).'</td>';
-                $data_table .= '</tr>';
-                $sales_total += str_replace(',', '', number_format($sale_res->grand_total,2));
-            }
-            
-        }
-
-
-            for ($j=$i; $j <=3 ; $j++) { 
-               $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$j.'</td>';
-                $data_table .= '<td colspan="2">'.'</td>';
-                $data_table .= '<td>'.''.'</td>';
-                $data_table .= '<td>'.''.'</td>';
-                $data_table .= '<td>'.''.'</td>';
-                $data_table .= '</tr>';
-            }
-
-            $data_table .= '</tbody>';
-            $rows = '';
-            if ($row_checkin->reserv_id != 0) {
-                $rows = 7;
-                $deposit_price = $row_checkin->deposit;
-            }else{
-                $rows = 6;
-            }
-            $percentage = '%';
-            $discount = $row_checkin->discount;
-            if($row_checkin->percent_dis){
-                $discount = $row_checkin->percent_dis;
-            }
-            if($discount !='' || $discount > 0){
-                $discount_fix =  $discount;
-                if (isset($discount_fix)) {
-                    $dis_fix = $discount_fix;
-                    $dpos = strpos($dis_fix, $percentage);
-                    if ($dpos !== false) {
-                        $pds = explode("%", $dis_fix);
-                        $dicount_text = '('.$row_checkin->percent_dis.')';
-                        $discount_usd = str_replace(',', '', number_format((($total * ((Float)($pds[0])) / 100)),2));
-                    } else {
-                        $discount_usd = str_replace(',', '', number_format((Float)($discount),2));
-                    }
-                }
-                $dicount_p =  $discount_usd;
-            }
-
-            $total_pay = $total + $sales_total + $total_extra - ($deposit_price + $dicount_p);
-            $total_pay_riel​ = $total_pay * $rate;
-
-            $data_table .='<tfoot>';
-                $data_table .= '<tr>';
-                $data_table .= '<th colspan="3" rowspan="'.$rows.'" style="vertical-align:center !important;"><span style="font-size:10px">Exch rate :</span><span  style="font-size:10px">'.$rate.'&nbsp;៛</span></th>';
-                $data_table .= '<th class="text-right" style="white-space: nowrap !important;">Sub Total(USD)</th>';
-                $data_table .= '<th colspan="2" class="text-right" style="white-space: nowrap !important;">$ '.(number_format($total + $sales_total + $total_extra,2)).'</th>';
-                $data_table .= '</tr>';
-                    $data_table .= '<tr>';
-                    $data_table .= '<th class="text-right" style="font-size:11px">Deposit</th>';
-                    $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($deposit_price,2).'</th>';
-                    $data_table .= '</tr>';
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right" style="font-size:11px">Discount '.$dicount_text.'</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($dicount_p,2).'</th>';
-                $data_table .= '</tr>';
-
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right" style="font-size:11px">Total Pay(Cash)</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($total_pay-$checkin->bank_amount,2).'</th>';
-                $data_table .= '</tr>';
-
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right" style="font-size:11px">Total Pay('.$checkin->bank.')</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($checkin->bank_amount,2).'</th>';
-                $data_table .= '</tr>';
-
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right" style="font-size:11px">Total Pay(RIEL)</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">៛ '.number_format($total_pay_riel​,0).'</th>';
-                $data_table .= '</tr>';         
-
-            $data_table .='</tfoot>';
-
-
-
-        $data['sales_total'] = $sales_total;
-        $data['total'] = $total;
-        $data['data_table'] = $data_table;
-        // var_dump($data['row_checkin']);die();
-        $this->load->view('admin/checkout/reciept_new', $data);
-    }
-    public function payment_befor_checkout(){
-        $id=$this->input->post('id');
-        $cid=$this->input->post('cid');
-        $bank_id=$this->input->post('bank');
-        $account_number=$this->input->post('account_number');
-        $account_name=$this->input->post('account_name');
-        $bank_amount=$this->input->post('bank_amount');
-        $note=$this->input->post('note');
-        $payment_data =[];
-        $payment_detail_data =[];
-        $pay = array('pay' => 'pay');
-        $this->db->query("UPDATE tbl_checkin SET pay='pay',bank_id='$bank_id',account_name='$account_name',note='$note',account_number='$account_number',bank_amount='$bank_amount'WHERE id='$id'");
-        // $data['exchange_rate']=$this->currencies_model->get_exchange_rate();
-        $rate=$this->db->where('symbol','R')->get('tbl_currencies')->row()->cur_exchange;
-        // print_r($data['exchange_rate']);die();
-        $items = $this->checkout_model->load_item($id);
-        $data['items'] = $items['room'];
-        $data['sales'] = $items['sales'];
-
-        $row_checkin =  $this->db->where('id',$id)->get('tbl_checkin')->row();
-        
-        $data['row_checkin'] = $row_checkin;
-        $data['customer'] =  $this->checkout_model->load_customer_name($cid);
-        $Rest = $this->load->database('rest', TRUE);
-
-        // $sales = $Rest->query("SELECT s.* FROM sma_sales s
-        //                                 WHERE s.hotel_checkin_id = '$id' AND s.payment_status ='due'
-        //                                 ")->result();
-        // if ($sales) {
-        //   foreach ($sales as $sale) {
-        //     $data_sales = [
-        //       'payment_status' => 'paid',
-        //       'paid'=>$sale->grand_total,
-        //       'pos' => 2
-        //     ];
-        //     $Rest->where('id',$sale->id)->update('sma_sales',$data_sales);
-        //   }
-        // }
-
-
-        $checkin_data = $this->db->query("SELECT ch_dt.*,room_t.type,b.account_name as bank,ch.bank_amount 
+        $checkin_data = $this->db->query("SELECT ch_dt.*,room_t.type,b.account_name as bank,b.account_number as banknumber,ch.bank_amount,ch.note,ch_dt.date_start,ch_dt.date_end,ch.new_month,ch.date_in,ch_dt.old_kw,ch_dt.new_kw 
                                         FROM tbl_checkin_detail ch_dt 
                                         LEFT JOIN tbl_roomtype room_t 
                                         ON room_t.id = ch_dt.room_type
@@ -1114,19 +978,22 @@ class Admin_Checkin extends CI_Controller {
         $dicount_text = '';
         $total_extra = 0;
         $deposit = 0;
-        if($row_checkin->pay == 'unpay'){
+        if($row_checkin->pay == 'unpay' || $row_checkin->pay == 'PANDING' ){
           $extra_charge = $row_checkin->extra_charges;
         }
                 $data_table .= '<tbody>';
         foreach ($checkin_data as $checkin) {
+            $quntity=$checkin->qty;
+            $quntity_month=$quntity / $quntity ;
             if($checkin->room_id > 0){
                 $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$i++.'</td>';
-                $data_table .= '<td colspan="2">'.$checkin->type.' ( '.$checkin->room_no.' )</td>';
-                $data_table .= '<td class="text-center">'.$checkin->amount.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
-                $data_table .= '<td class="text-right">'.number_format($checkin->amount,2).'</td>';
-                $total += str_replace(',', '', number_format($checkin->amount,2));
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$i++.'</td>';
+                $data_table .= '<td colspan="2" style="font-size:15px">'.$checkin->type.' ( '.$checkin->room_no.' ) <br> Rental Fee from ' .$checkin->new_month.' to '.$checkin->date_in.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$checkin->price_more.'</td>';
+                // $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$quntity_month.'</td>';
+                $data_table .= '<td class="text-right" style="font-size:15px">'.number_format($checkin->price_more,2).'</td>';
+                $total += str_replace(',', '', number_format($checkin->price_more * $checkin->qty,2));
                 $data_table .= '</tr>';
 
                 $payment_detail_data[] = [
@@ -1139,15 +1006,17 @@ class Admin_Checkin extends CI_Controller {
                                         'amount'            => str_replace(',', '', number_format($checkin->amount,2))
                                     ];
 
+                                    
+
             }else{
                 $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$i++.'</td>';
-                $data_table .= '<td colspan="2">'.$checkin->item_name.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->price.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
-                $data_table .= '<td class="text-right">'.number_format($checkin->amount,2).'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$i++.'</td>';
+                $data_table .= '<td colspan="2" style="font-size:15px">'.$checkin->item_name.' </br> Usage from '.$checkin->date_start.' to '.$checkin->date_end.' <br> Old Number - New Number <br> '.$checkin->old_kw.' - '.$checkin->new_kw.' = '.number_format($checkin->new_kw - $checkin->old_kw,2).' <br><br> Note: '.$checkin->note.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$checkin->price.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$checkin->qty.'</td>';
+                $data_table .= '<td class="text-right" style="font-size:15px">'.number_format($checkin->price * $checkin->qty,2).'</td>';
                 $data_table .= '</tr>';
-                $total_extra += str_replace(',', '', number_format($checkin->amount,2));
+                $total_extra += str_replace(',', '', number_format($checkin->price * $checkin->qty,2));
                 $payment_detail_data[] = [
                                         'payment_id'        => '',
                                         'checkindetail_id'  => $checkin->detail_id,
@@ -1155,17 +1024,17 @@ class Admin_Checkin extends CI_Controller {
                                         'sale_id'           => null,
                                         'item_name'         => $checkin->item_name,
                                         'status'            => 'extra_item',
-                                        'amount'            => str_replace(',', '', number_format($checkin->amount,2))
+                                        'amount'            => str_replace(',', '', number_format($checkin->price * $checkin->qty,2))
                                     ];
             }
         }
         if($extra_charge > 0){
             $data_table .= '<tr>';
-            $data_table .= '<td class="text-center">'.$i++.'</td>';
-            $data_table .= '<td colspan="3"><span style="margin:0px 5px 0px 10px"></span>
+            $data_table .= '<td class="text-center" style="font-size:15px">'.$i++.'</td>';
+            $data_table .= '<td colspan="3" style="font-size:15px"><span style="margin:0px 5px 0px 12px"></span>
                         Extra Charges</td>';
-            $data_table .= '<td class="text-center"></td>';
-            $data_table .= '<td class="text-right">'.number_format($extra_charge,2).'</td>';
+            $data_table .= '<td class="text-center" style="font-size:15px"></td>';
+            $data_table .= '<td class="text-right" style="font-size:15px">'.number_format($extra_charge,2).'</td>';
             $data_table .= '</tr>';
             $total_extra += str_replace(',', '', number_format($extra_charge,2));
             $payment_detail_data[] = [
@@ -1205,7 +1074,254 @@ class Admin_Checkin extends CI_Controller {
 
             for ($j=$i; $j <=3 ; $j++) { 
                 $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$j.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$j.'</td>';
+                $data_table .= '<td colspan="2">'.''.'</td>';
+                $data_table .= '<td>'.''.'</td>';
+                $data_table .= '<td>'.''.'</td>';
+                $data_table .= '<td>'.''.'</td>';
+                $data_table .= '</tr>';
+            
+            }
+            $data_table .= '</tbody>';
+            $rows = '';
+            if ($row_checkin->reserv_id != 0) {
+                $rows = 7;
+                $deposit_price = $row_checkin->deposit;
+            }else{
+                $rows = 6;
+            }
+            $percentage = '%';
+            $discount = $row_checkin->discount;
+            if($row_checkin->percent_dis){
+                $discount = $row_checkin->percent_dis;
+            }
+            if($discount !='' || $discount > 0){
+                $discount_fix =  $discount;
+                if (isset($discount_fix)) {
+                    $dis_fix = $discount_fix;
+                    $dpos = strpos($dis_fix, $percentage);
+                    if ($dpos !== false) {
+                        $pds = explode("%", $dis_fix);
+                        $dicount_text = '('.$row_checkin->percent_dis.')';
+                        $discount_usd = str_replace(',', '', number_format((($total * ((Float)($pds[0])) / 100)),2));
+                    } else {
+                        $discount_usd = str_replace(',', '', number_format((Float)($discount),2));
+                    }
+                }
+                $dicount_p =  $discount_usd;
+            }
+
+            $total_pay = $total + $sales_total + $total_extra - ($deposit_price + $dicount_p);
+            $total_pay_riel​ = $total_pay * $rate;
+
+            $data_table .='<tfoot>';
+                $data_table .= '<tr>';
+                $data_table .= '<th colspan="3" rowspan="'.$rows.'" style="vertical-align:center !important;"><span style="font-size:12px">Exch rate :</span><span  style="font-size:12px">'.$rate.'&nbsp;៛</span><br><span> </span><span style="font-family:Khmer OS;font-size:15px"></span></th>';
+                $data_table .= '<th class="text-right" style="white-space: nowrap !important;">Sub Total(USD)</th>';
+                $data_table .= '<th colspan="2" class="text-right" style="white-space: nowrap !important;">$ '.(number_format($total + $sales_total + $total_extra,2)).'</th>';
+                $data_table .= '</tr>';
+                    // $data_table .= '<tr>';
+                    // $data_table .= '<th class="text-right" style="font-size:11px">Deposit</th>';
+                    // $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($deposit_price,2).'</th>';
+                    // $data_table .= '</tr>';
+                // $data_table .= '<tr>';
+                // $data_table .= '<th class="text-right" style="font-size:12px">Discount '.$dicount_text.'</th>';
+                // $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($dicount_p,2).'</th>';
+                // $data_table .= '</tr>';
+
+                // $data_table .= '<tr>';
+                // $data_table .= '<th class="text-right" style="font-size:12px">Total Pay(Cash)</th>';
+                // $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($total_pay-$checkin->bank_amount,2).'</th>';
+                // $data_table .= '</tr>';
+
+                // $data_table .= '<tr>';
+                // $data_table .= '<th class="text-right" style="font-size:12px">Total Pay('.$checkin->bank.' / '.$checkin->banknumber.')</th>';
+                // $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($checkin->bank_amount,2).'</th>';
+                // $data_table .= '</tr>';
+
+                $data_table .= '<tr>';
+                $data_table .= '<th class="text-right" style="font-size:12px">Sub Total(RIEL)</th>';
+                $data_table .= '<th colspan="2" style="text-align: right;">៛ '.number_format($total_pay_riel​,0).'</th>';
+                $data_table .= '</tr>';         
+
+            $data_table .='</tfoot>';
+
+
+
+        $data['sales_total'] = $sales_total;
+        $data['total'] = $total;
+        $data['data_table'] = $data_table;
+        // var_dump($data['row_checkin']);die();
+        $this->load->view('admin/checkout/reciept', $data);
+    }
+    public function payment_befor_checkout(){
+        $id=$this->input->post('id');
+        $cid=$this->input->post('cid');
+        // $date_start=$this->input->post('date_start');
+        $new_month=$this->input->post('new_month');
+        // $date_end=$this->input->post('date_end');
+        // $old_kw=$this->input->post('old_kw');
+        // $new_kw=$this->input->post('new_kw');
+        $bank_id=$this->input->post('bank');
+        $account_number=$this->input->post('account_number');
+        $account_name=$this->input->post('account_name');
+        $bank_amount=$this->input->post('bank_amount');
+        $note=$this->input->post('note');
+        $payment_data =[];
+        $payment_detail_data =[];
+        $pay = array('pay' => 'pay');
+        $this->db->query("UPDATE tbl_checkin SET pay='pay',bank_id='$bank_id',old_kw='$old_kw',new_kw='$new_kw',date_start='$date_start',new_month= '$new_month',date_end='$date_end',account_name='$account_name',note='$note',account_number='$account_number',bank_amount='$bank_amount'WHERE id='$id'");
+        // $data['exchange_rate']=$this->currencies_model->get_exchange_rate();
+        $rate=$this->db->get('tbl_currencies')->row()->cur_exchange;
+        // print_r($data['exchange_rate']);die();
+        $items = $this->checkout_model->load_item($id);
+        $data['items'] = $items['room'];
+        $data['sales'] = $items['sales'];
+
+        $row_checkin =  $this->db->where('id',$id)->get('tbl_checkin')->row();
+        
+        $data['row_checkin'] = $row_checkin;
+        $data['customer'] =  $this->checkout_model->load_customer_name($cid);
+        // $Rest = $this->load->database('rest', TRUE);
+
+        // $sales = $Rest->query("SELECT s.* FROM sma_sales s
+        //                                 WHERE s.hotel_checkin_id = '$id' AND s.payment_status ='due'
+        //                                 ")->result();
+        // if ($sales) {
+        //   foreach ($sales as $sale) {
+        //     $data_sales = [
+        //       'payment_status' => 'paid',
+        //       'paid'=>$sale->grand_total,
+        //       'pos' => 2
+        //     ];
+        //     $Rest->where('id',$sale->id)->update('sma_sales',$data_sales);
+        //   }
+        // }
+
+        $checkin_data = $this->db->query("SELECT ch_dt.*,room_t.type,b.account_name as bank,b.account_number as banknumber,ch.bank_amount,ch.note,ch_dt.date_start,ch_dt.date_end,ch.new_month,ch.date_in,ch_dt.old_kw,ch_dt.new_kw 
+        FROM tbl_checkin_detail ch_dt 
+        LEFT JOIN tbl_roomtype room_t 
+        ON room_t.id = ch_dt.room_type
+        LEFT JOIN tbl_checkin ch
+        ON ch.id=ch_dt.checkin_id
+        LEFT JOIN tbl_bank b 
+        ON b.id=ch.bank_id
+        WHERE ch_dt.checkin_id = '$id'")->result();
+        $is_payment = $this->db->where('checkin_id',$id)->update('tbl_checkin_detail',['is_pay'=>1]);
+
+        $i = 1; 
+        $total = 0; 
+        $totals = 0; 
+        $tqty = 0;
+        $sales_total = 0;
+        $dicount_p = 0;
+        $extra_ch = 0;
+        $data_table = "";
+        $room_no = "";
+        $extra_charge = 0;
+        $deposit_price = 0;
+        $total_pay = 0;
+        $total_pay_riel = 0;
+        $dicount_text = '';
+        $total_extra = 0;
+        $deposit = 0;
+        if($row_checkin->pay == 'unpay' || $row_checkin->pay == 'PANDING' ){
+          $extra_charge = $row_checkin->extra_charges;
+        }
+                $data_table .= '<tbody>';
+        foreach ($checkin_data as $checkin) {
+            $quntity=$checkin->qty;
+            $quntity_month=$quntity / $quntity ;
+            if($checkin->room_id > 0){
+                $data_table .= '<tr>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$i++.'</td>';
+                $data_table .= '<td colspan="2" style="font-size:15px">'.$checkin->type.' ( '.$checkin->room_no.' ) <br> Rental Fee from ' .$checkin->new_month.' to '.$checkin->date_in.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$checkin->price_more.'</td>';
+                // $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$quntity_month.'</td>';
+                $data_table .= '<td class="text-right" style="font-size:15px">'.number_format($checkin->price_more,2).'</td>';
+                $total += str_replace(',', '', number_format($checkin->price_more * $checkin->qty,2));
+                $data_table .= '</tr>';
+
+                $payment_detail_data[] = [
+                                        'payment_id'        => '',
+                                        'checkindetail_id'  => $checkin->detail_id,
+                                        'room_id'           => $checkin->room_id,
+                                        'sale_id'           => null,
+                                        'item_name'         => $checkin->type.' ( '.$checkin->room_no.' )',
+                                        'status'            => 'room',
+                                        'amount'            => str_replace(',', '', number_format($checkin->amount,2))
+                                    ];
+
+                                    
+
+            }else{
+                $data_table .= '<tr>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$i++.'</td>';
+                $data_table .= '<td colspan="2" style="font-size:15px">'.$checkin->item_name.' </br> Usage from '.$checkin->date_start.' to '.$checkin->date_end.' <br> Old Number - New Number <br> '.$checkin->old_kw.' - '.$checkin->new_kw.' = '.number_format($checkin->new_kw - $checkin->old_kw,2).' <br><br> Note: '.$checkin->note.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$checkin->price.'</td>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$checkin->qty.'</td>';
+                $data_table .= '<td class="text-right" style="font-size:15px">'.number_format($checkin->price * $checkin->qty,2).'</td>';
+                $data_table .= '</tr>';
+                $total_extra += str_replace(',', '', number_format($checkin->price * $checkin->qty,2));
+                $payment_detail_data[] = [
+                                        'payment_id'        => '',
+                                        'checkindetail_id'  => $checkin->detail_id,
+                                        'room_id'           => null,
+                                        'sale_id'           => null,
+                                        'item_name'         => $checkin->item_name,
+                                        'status'            => 'extra_item',
+                                        'amount'            => str_replace(',', '', number_format($checkin->price * $checkin->qty,2))
+                                    ];
+            }
+        }
+        if($extra_charge > 0){
+            $data_table .= '<tr>';
+            $data_table .= '<td class="text-center" style="font-size:15px">'.$i++.'</td>';
+            $data_table .= '<td colspan="3" style="font-size:15px"><span style="margin:0px 5px 0px 12px"></span>
+                        Extra Charges</td>';
+            $data_table .= '<td class="text-center" style="font-size:15px"></td>';
+            $data_table .= '<td class="text-right" style="font-size:15px">'.number_format($extra_charge,2).'</td>';
+            $data_table .= '</tr>';
+            $total_extra += str_replace(',', '', number_format($extra_charge,2));
+            $payment_detail_data[] = [
+                                        'payment_id'        => '',
+                                        'checkindetail_id'  => null,
+                                        'room_id'           => null,
+                                        'sale_id'           => null,
+                                        'item_name'         => 'Extra Charges',
+                                        'status'            => 'extra_charges',
+                                        'amount'            => str_replace(',', '', number_format($extra_charge,2))
+                                    ];
+        }
+        if($sales){
+            foreach ($sales as $sale_res) {
+                $data_table .= '<tr>';
+                $data_table .= '<td class="text-center">'.$i++.'</td>';
+                $data_table .= '<td colspan="2">'.$sale_res->reference_no.'</td>';
+                $data_table .= '<td class="text-center">'.number_format($sale_res->grand_total,2).'</td>';
+                $data_table .= '<td class="text-center">1</td>';
+                $data_table .= '<td class="text-right">'.number_format($sale_res->grand_total,2).'</td>';
+                $data_table .= '</tr>';
+                $sales_total += str_replace(',', '', number_format($sale_res->grand_total,2));
+
+                $payment_detail_data[] = [
+                                        'payment_id'        => '',
+                                        'checkindetail_id'  => null,
+                                        'room_id'           => null,
+                                        'sale_id'           => $sale_res->id,
+                                        'item_name'         => $sale_res->reference_no,
+                                        'status'            => 'pos_sale',
+                                        'amount'            => str_replace(',', '', number_format($sale_res->grand_total,2))
+                                    ];
+            }
+            
+        }
+
+
+            for ($j=$i; $j <=3 ; $j++) { 
+                $data_table .= '<tr>';
+                $data_table .= '<td class="text-center" style="font-size:15px">'.$j.'</td>';
                 $data_table .= '<td colspan="2">'.''.'</td>';
                 $data_table .= '<td>'.''.'</td>';
                 $data_table .= '<td>'.''.'</td>';
@@ -1242,26 +1358,26 @@ class Admin_Checkin extends CI_Controller {
                 }
                 $dicount_p =  $discount_usd;
             }
-            $total_pay = $total + $sales_total + $total_extra - ($deposit_price + $dicount_p);
+            $total_pay = $total + $sales_total + $total_extra - ($dicount_p);
             $total_pay_riel​ = $total_pay * $rate;
 
             $data_table .='<tfoot>';
                 $data_table .= '<tr>';
-                $data_table .= '<th colspan="3" rowspan="'.$rows.'" style="vertical-align:center !important;"><span>Exch rate :</span><span>'.$rate.'&nbsp;៛</span></th>';
+                $data_table .= '<th colspan="3" rowspan="'.$rows.'" style="vertical-align:center !important;"><span>Exch rate :</span><span>'.$rate.'&nbsp;៛</span><br><span> </span></th>';
                 $data_table .= '<th class="text-right" style="white-space: nowrap !important;">Sub Total(USD)</th>';
                 $data_table .= '<th colspan="2" class="text-right" style="white-space: nowrap !important;">$ '.(number_format($total + $sales_total + $total_extra,2)).'</th>';
                 $data_table .= '</tr>';
 
                 if($row_checkin->reserv_id != 0){
-                    $data_table .= '<tr>';
-                    $data_table .= '<th class="text-right" style="font-size:11px">Deposit</th>';
-                    $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($deposit_price,2).'</th>';
-                    $data_table .= '</tr>';
+                    // $data_table .= '<tr>';
+                    // $data_table .= '<th class="text-right" style="font-size:12px">Deposit</th>';
+                    // $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($deposit_price,2).'</th>';
+                    // $data_table .= '</tr>';
                 }
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right" style="font-size:11px">Discount '.$dicount_text.'</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($dicount_p,2).'</th>';
-                $data_table .= '</tr>';
+                // $data_table .= '<tr>';
+                // $data_table .= '<th class="text-right" style="font-size:11px">Discount '.$dicount_text.'</th>';
+                // $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($dicount_p,2).'</th>';
+                // $data_table .= '</tr>';
 
                 $data_table .= '<tr>';
                 $data_table .= '<th  style="text-align: right;font-size:11px">Total Pay (Cash)</th>';
@@ -1269,12 +1385,12 @@ class Admin_Checkin extends CI_Controller {
                 $data_table .= '</tr>';
 
                 $data_table .= '<tr>';
-                $data_table .= '<th  style="text-align: right;font-size:11px">Total Pay ('.$checkin->bank.')</th>';
+                $data_table .= '<th  style="text-align: right;font-size:11px">Total Pay ('.$checkin->bank.' / '.$checkin->banknumber.')</th>';
                 $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($checkin->bank_amount,2).'</th>';
                 $data_table .= '</tr>';
 
                 $data_table .= '<tr>';
-                $data_table .= '<th class="text-right" style="font-size:11px">Total Pay(RIEL)</th>';
+                $data_table .= '<th class="text-right" style="font-size:11px"> Total Pay(RIEL)</th>';
                 $data_table .= '<th colspan="2" style="text-align: right;">៛ '.number_format($total_pay_riel​,0).'</th>';
                 $data_table .= '</tr>';         
 
@@ -1382,7 +1498,7 @@ class Admin_Checkin extends CI_Controller {
             }else if($time['time']=="Time")
             {
                 $price = $time['price'];
-                 $total = $price *  $duration;
+                $total = $price *  $duration;
               $duration_time= $duration + date('H:i:s',strtotime($this->input->post('date_out').''.date('H:i:s')));
                  //$duration_time = $duration + 3;
                $date_out = date('Y-m-d H:i:s',strtotime($date_in.' +'.$duration_time.' hour'));
@@ -1582,10 +1698,8 @@ class Admin_Checkin extends CI_Controller {
     }
     function update_checkin($id){
         $checkin = $this->db->query("SELECT * FROM tbl_checkin_detail WHERE detail_id=$id")->result();
-        foreach ($checkin as $check) {
-        }
         $date_out=date('Y-m-d H:i:s');
-        $amount=$this->input->post('re_amount');
+        $amount=$this->input->post('refun_amount');
         $refun_by = $this->session->userdata('user_name');
         $data=array(
             'date_out' => $date_out,
@@ -1596,7 +1710,6 @@ class Admin_Checkin extends CI_Controller {
         );
         $this ->db->where('detail_id',$id);
         $this->db->update('tbl_checkin_detail',$data);
-        // $this->db->update('tbl_checkin_detail',$data);
         redirect('admin/checkin');
     }
     function payment_method($id=null,$cid=null)    {
@@ -1608,6 +1721,7 @@ class Admin_Checkin extends CI_Controller {
         $data['banks'] = $this->checkin_model->getAllbanks();
         $data['free_rooms'] = $this->room_model->get_free_room();
         $data['room_type'] = $this->roomtype_model->get_roomtype_all();
+        $data['chec'] = $this->checkin_model->getAllchk($id);
         $data['main_content'] = 'admin/checkin/payment_method';
         $this->load->view('includes/template', $data);
     }

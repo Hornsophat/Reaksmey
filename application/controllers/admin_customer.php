@@ -180,7 +180,21 @@ class Admin_Customer extends CI_Controller {
             $this->form_validation->set_rules('Family', 'Family', 'trim|required|valid_p_name|is_unique[tbl_customer.Family]');
             $this->form_validation->set_error_delimiters('<div class="alert alert-error"><a class="close" data-dismiss="alert">×</a><strong>', '</strong></div>');
             
+            $binod=array(
+                'upload_path' => '/assets/pdf',
+                'allowed_types' => 'jgp|png|jpeg}pdf',
+                'max_size'=> 4000
+            );
 
+            $this->load->library("upload",$binod);
+
+            if(!$this->upload->do_upload('pdffile')){
+                echo $this->upload->display_errors();
+            }
+            else{
+                $fn=$this->upload->data();
+                $file=$fn['file_name'];
+            }
             //if the form has passed through the validation
             if ($this->form_validation->run())
             {
@@ -189,6 +203,7 @@ class Admin_Customer extends CI_Controller {
                     'Family' => $this->input->post('Family'),
                     'Gender' => $this->input->post('Gender'),
                     'Age' => $this->input->post('Age'),
+                    'file' => $file,
                     'Passport' => $this->input->post('Passport'),
                     'Mobile' => $this->input->post('Mobile'),
                     'Country' => $this->input->post('Country'),
@@ -212,6 +227,21 @@ class Admin_Customer extends CI_Controller {
         //load the view
         $data['main_content'] = 'admin/customer/add';
         $this->load->view('includes/template', $data);  
+    }       
+
+
+    public function view($id=Null)
+    {
+        $data['customer'] = $this->customer_model->get_all_customer($id);
+        $data['checkin'] = $this->customer_model->get_all_checkin($id);
+        $data['item'] = $this->customer_model->get_all_item($id);
+
+
+        //load the view
+        $data['main_content'] = 'admin/customer/view';
+        $this->load->view('includes/template', $data); 
+
+
     }       
 
     /**

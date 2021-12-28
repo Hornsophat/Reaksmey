@@ -8,17 +8,20 @@
     $lang['View Details'] = "បង្ហាញទិន្នន័យ";
     
     $lang['Customer'] = "អតិថិជន";
-    $lang['Today Check-Out !'] = "ចាកចេញថ្ងៃនេះ";
+    $lang['Today Check-Out !'] = "ចាកចេញ";
     $lang['Today Check-In'] = "ស្នាក់នៅថ្ងៃនេះ";
     $lang['System'] = "ប្រព័ន្ធ";
     $lang['Config Wizard'] = "កែតម្រូវ";
     $lang['Checkout'] = "ចាកចេញ";
     $lang['Checkin'] = "ស្នាក់នៅ";
+    $lang['payment_date'] = "ថ្ងៃបង់ប្រាក់";
     $lang['Reservation'] = "ការកក់បន្ទប់";
     $lang['User Profile'] = "អ្នកប្រើប្រាស់";
     $lang['Setting'] = "បង្កើតអ្នកប្រើប្រាស់";
     $lang['Logout'] = "ចាកចេញ";
     $lang['Additem'] = "ថែមផលិតផល";
+    $lang['roomtype'] = "ប្រភេទបន្ទប់";
+    $lang['room'] = "លេខបន្ទប់";
 
     $lang['all room'] = 'បង្ហាញបន្ទប់ទាំងអស់';
     $lang['rooms'] = 'បន្ទប់';
@@ -48,7 +51,7 @@
     $lang['New Checkin'] = ' បង្កើតថ្មី';
     $lang['Add a new'] = ' បង្កើតថ្មី';
     $lang['Read card'] = ' មើលកាត';
-    $lang['CheckOut'] = ' ចាកចេញ';
+    $lang['CheckOut'] = ' ចាកចេញទាំងអស់';
     $lang['Payment'] = ' បង់លុយ';
     $lang['Search:'] = ' ស្វែងរក';
     $lang['Order by:'] = ' កំណត់ដោយ';
@@ -99,7 +102,8 @@
     $lang['Discount'] = 'បញ្ចុះតម្លៃ';
     $lang['Amount Per Day'] ='ចំនួនពេញមួយថ្ងៃ';
     $lang['total'] = 'ចំនួនសរុប';
-    $lang['amount'] = 'សរុប';
+    $lang['amount'] = 'ចំនួនលុយសរុប';
+    $lang['amount_cost'] = 'ចំនួនលុយសរុបពីរដ្ឋ';
      $lang['grand_total'] = 'តំលៃ​បូក​សរុប';
     $lang['Save changes'] = 'ដាក់បញ្ចូល';
     $lang['Save'] ='រក្សារទុក';

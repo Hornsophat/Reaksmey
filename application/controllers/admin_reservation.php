@@ -44,7 +44,6 @@ class Admin_Reservation extends CI_Controller {
         $search_string = $this->input->post('search_string');
         $order = $this->input->post('order'); 
         $order_type = $this->input->post('order_type'); 
-
         //pagination settings
         $config['per_page'] = 10;
 
@@ -70,7 +69,6 @@ class Admin_Reservation extends CI_Controller {
         if ($limit_end < 0){
             $limit_end = 0;
         } 
-
         //if order type was changed
         if($order_type){
             $filter_session_data['order_type'] = $order_type;
@@ -81,7 +79,7 @@ class Admin_Reservation extends CI_Controller {
                 $order_type = $this->session->userdata('order_type');    
             }else{
                 //if we have nothing inside session, so it's the default "Asc"
-                $order_type = 'DESC';
+                $order_type = 'Asc';
             }
         }
         //make the data type var avaible to our view
@@ -140,7 +138,7 @@ class Admin_Reservation extends CI_Controller {
             //pre selected options
             $data['search_string_selected'] = '';
             $data['order'] = 'id';
-
+          
             //fetch sql data into arrays
             $data['count_products']= $this->reservation_model->count_reservation();
             $data['reservation'] = $this->reservation_model->get_reservation('', '', $order_type, $config['per_page'],$limit_end); 

@@ -81,7 +81,7 @@
          </div>
 
 	   <div class="col-md-3">
-    <div class="control-group">
+    <!-- <div class="control-group">
             <label for="inputError" class="control-label">Price</label>         
             <div class="controls">
               <input type="text" id="" class="form-control" name="price" value="<?php echo set_value('price'); ?>" >
@@ -103,8 +103,8 @@
               <input type="text" id="" class="form-control" name="price_cereymony" value="<?php echo set_value('price_cereymony'); ?>" >
             </div>
           </div>
-         </div>
-  <div class="col-md-3">
+         </div> -->
+  <div class="col-md-12">
     <div class="control-group">
             <label for="inputError" class="control-label">Month(Price)</label>         
             <div class="controls">
@@ -112,7 +112,7 @@
             </div>
           </div>
          </div>      
-  <div class="col-md-6">
+  <div class="col-md-12">
     <div class="control-group">
             <label for="inputError" class="control-label">Options and note</label>         
             <div class="controls">
@@ -125,7 +125,7 @@
        
     
         
-          </br>
+          </br></br></br></br></br></br></br></br>
           <div class="form-actions">
             <button class="btn btn-sm btn-primary" type="submit">Save changes</button>
             <button class="btn btn-sm" type="reset">Cancel</button>

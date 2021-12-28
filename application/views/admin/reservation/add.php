@@ -92,7 +92,7 @@
             </div>
         </div>
         <div class="row">
-             <div class="col-md-3">
+             <div class="col-md-4">
                 <div class="form-group">
                   <label for="inputError" class="control-label"><?php echo lang('CheckIn Type');?></label>
                   <div class="col-sm-12">
@@ -103,7 +103,7 @@
                   </div>
                 </div>
               </div>
-            <div class="col-sm-4 col-md-4 hide ">
+            <div class=" hide ">
                 <label><?php echo lang('Staying Time');?></label>
                 <select class="form-control input staytime" id="staytime1" name="staytime1">
                     <option value="" select hidden> Select Staying Time </option>
@@ -138,7 +138,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-8 col-md-8">
+          <!-- <div class="col-sm-8 col-md-8">
             <div class="row">  
                 <div class="col-sm-6 col-md-6">
                     <label>Acc Type</label>
@@ -150,12 +150,12 @@
                       }
                    ?>
                     </select>
-                </div>
+                </div>-->
                 <div class="col-sm-6 col-md-6">
                     <label>Deposit Amount</label>
                     <input type="text" value="0" onclick="this.select();" onkeyup="total_reservation();" oninput = "this.value=this.value.replace(/[^0-9.%]/g,'');" name="deposit_am" class="form-control deposit_am" id="deposit_am">
                 </div>
-                <div class="col-sm-6 col-md-6">
+                <!--<div class="col-sm-6 col-md-6">
                     <label>Acc Name</label>
                     <input type="text" value="" name="bank_acc_name" class="form-control bank_acc_name" id="bank_acc_name">
                 </div>
@@ -164,14 +164,14 @@
                     <input type="text" value="" oninput = "this.value=this.value.replace(/[^0-9]/g,'');" name="bank_acc_number" class="form-control bank_acc_number" id="bank_acc_number">
                 </div>
             </div>
-          </div>
-          <div class="col-sm-4 col-md-4">
-              <div class="row">
+          </div> 
+ <div class="col-sm-4 col-md-4">
+               <div class="row">
                 <div class="col-sm-12 col-md-12">
                   <label>Discount</label>
                   <input type="text" value="0" onclick="this.select();" onkeyup="total_reservation();" oninput = "this.value=this.value.replace(/[^0-9.%]/g,'');" name="discount_re" class="form-control" id="discount_re">
                 </div>
-              </div>
+              </div> -->
               <div class="row">
                 <div class="col-sm-12 col-md-12">
                     <label style="color: #ff0500;">Grand Total</label>
@@ -188,13 +188,13 @@
               
           </div>
         </div> -->
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-sm-12 col-md-12">
                 <label>
                     <?php echo lang('Note');?></label>
                 <textarea class="form-control" name="note" id="note"></textarea>
             </div>
-        </div>
+        </div> -->
         <div class="row">
             <br>
             <div class="form-actions col-sm-12 col-md-12 pull-right">

@@ -240,12 +240,34 @@ class Room_model extends CI_Model {
 		$this->db->from('tbl_room ro');
 		$this->db->join('tbl_roomtype rot', 'rot.id = ro.type_id');
 
-		$this->db->where('ro.status', 0);
+		$this->db->where('ro.status', 1);
 		$this->db->order_by('ro.id');
 
 		$query = $this->db->get();
 		return $query->result_array(); 
     }   
+
+	public function get_all_room($id) 
+    {
+        $this->db->select('tbl_reservation.*');
+        $this->db->select('tbl_room.room_no ');
+        $this->db->select('tbl_roomtype.type ');
+        $this->db->select('tbl_customer.Family ');
+        $this->db->select('tbl_customer.Mobile ');
+        $this->db->select('tbl_customer.Gender ');
+        $this->db->select('tbl_customer.Passport ');
+        $this->db->select('tbl_customer.Country ');
+
+
+        $this->db->from('tbl_reservation');
+        $this->db->join('tbl_customer', 'tbl_customer.id = tbl_reservation.Customer_id','left');
+        $this->db->join('tbl_room', 'tbl_room.id = tbl_reservation.room_id','left');
+        $this->db->join('tbl_roomtype', 'tbl_roomtype.id = tbl_room.type_id','left');
+       
+        $this->db->where('tbl_customer.id', $id);
+        $this->db->group_by('tbl_customer.id', $id);
+        return $this->db->get()->result();
+    }
     
     public function get_busy_room()
     {
@@ -290,7 +312,7 @@ class Room_model extends CI_Model {
 		// 	ORDER BY ck.`id` DESC" 
 		// )->result();
 
-    	$this->db->select('cu.family, ck.checkouted, ck.date_in, ck.date_out, ck.checkin_type, ck.pay, rot.type, ro.room_no, ckd.amount, sty.time, ck.user, ckd.current_date');
+    	$this->db->select('cu.family, ck.checkouted,ck.price ,ck.date_in, ck.date_out, ck.checkin_type,ckd.room_id,ck.pay,ckd.item_name,ckd.amount ,rot.type, ro.room_no, ckd.qty,ckd.amount, sty.time, ck.user, ckd.current_date');
     	$this->db->from('tbl_checkin ck');
     	$this->db->join('tbl_checkin_detail ckd', 'ck.id = ckd.checkin_id');
     	$this->db->join('tbl_customer cu', 'ck.customer_id = cu.id', 'left');
@@ -361,35 +383,35 @@ class Room_model extends CI_Model {
     }
 
     function check_available_room($room_no='',$date_in=''){
-        $date_in = date('Y-m-d',strtotime($date_in));
-        $date_ins = date('Y-m-d',strtotime($date_in. ' -1hour'));
-        $date=date('Y-m-d H:i:s');
-        $data = $this->db->query("SELECT reserva.*,reserva.checkin_data AS date_in,reserva.checkout_data AS date_out
-                                    FROM tbl_reservation reserva 
-                                    LEFT JOIN tbl_multireservation mul_re ON reserva.id = mul_re.reserv_id
-                                    WHERE reserva.canceled = 0 AND reserva.confirmed = 0
-                                    AND 
-                                    (
-                                     reserva.room_id = '$room_no' 
-                                      OR mul_re.room_id = '$room_no' 
-                                    )
-                                    AND DATE(reserva.checkin_data) <= '$date_in' 
-                                    AND DATE(DATE_SUB(reserva.checkout_data, INTERVAL 1 DAY)) >= '$date_in'
-                                    GROUP BY reserva.id")->row();
-        if($data){
-            return $data;
-        }
+        // $date_in = date('Y-m-d',strtotime($date_in));
+        // $date_ins = date('Y-m-d',strtotime($date_in. ' -1hour'));
+        // $date=date('Y-m-d H:i:s');
+        // $data = $this->db->query("SELECT reserva.*,reserva.checkin_data AS date_in,reserva.checkout_data AS date_out
+        //                             FROM tbl_reservation reserva 
+        //                             LEFT JOIN tbl_multireservation mul_re ON reserva.id = mul_re.reserv_id
+        //                             WHERE reserva.canceled = 0 AND reserva.confirmed = 0
+        //                             AND 
+        //                             (
+        //                              reserva.room_id = '$room_no' 
+        //                               OR mul_re.room_id = '$room_no' 
+        //                             )
+        //                             AND DATE(reserva.checkin_data) <= '$date_in' 
+        //                             AND DATE(DATE_SUB(reserva.checkout_data, INTERVAL 1 DAY)) >= '$date_in'
+        //                             GROUP BY reserva.id")->row();
+        // if($data){
+        //     return $data;
+        // }
 
-        $data = $this->db->query("SELECT
-                                            checkin.*,
-                                            check_detail.room_id,check_detail.date_out AS room_checkout
-                                        FROM
-                                            tbl_checkin checkin
-                                    INNER JOIN tbl_checkin_detail check_detail ON checkin.id = check_detail.checkin_id 
-                                    WHERE  check_detail.room_id LIKE '%".$room_no."%'
-                                    AND DATE(checkin.date_in) <= '$date_in' 
-                                    AND DATE(DATE_SUB(checkin.date_out, INTERVAL 1 HOUR)) >= '$date_in'")->row();
-        return $data;
+        // $data = $this->db->query("SELECT
+        //                                     checkin.*,
+        //                                     check_detail.room_id,check_detail.date_out AS room_checkout
+        //                                 FROM
+        //                                     tbl_checkin checkin
+        //                             INNER JOIN tbl_checkin_detail check_detail ON checkin.id = check_detail.checkin_id 
+        //                             WHERE  check_detail.room_id LIKE '%".$room_no."%'
+        //                             AND DATE(checkin.date_in) <= '$date_in' 
+        //                             AND DATE(DATE_SUB(checkin.date_out, INTERVAL 1 HOUR)) >= '$date_in'")->row();
+        // return $data;
     }
     function getPriceByDay($date=null,$duration='',$r_type='',$rtypeIds=''){
 

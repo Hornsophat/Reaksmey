@@ -83,6 +83,7 @@
                 echo '<td class="crud-actions">
                   <a href="'.site_url("admin").'/room/update/'.$row['id'].'" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-edit"></span></a>                   
                   <a href="'.site_url("admin").'/room/delete/'.$row['id'].'" class="btn btn-sm btn-danger" data-toggle="tooltip" title="Delete" id="btnDel"><span class="glyphicon glyphicon-trash"></span></a>
+                  <a style="display:none" href="'.site_url("admin").'/room/view/'.$row['id'].'" class="btn btn-sm btn-success" data-toggle="tooltip" title="view" id="btnDel"><span class="glyphicon  glyphicon-list-alt"></span></a>
                 </td>';
                 echo '</tr>';
                 $row_id+=1;

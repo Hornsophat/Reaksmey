@@ -43,7 +43,7 @@
       
       <div class="row">
         <div class="span12 columns col-sm-12">
-          <div class="well hide">
+          <div class="well ">
            
             
           </div>
@@ -93,7 +93,7 @@
                       <?php
                       }else{
                       ?>
-                      <td onclick="return confirm('Are you sure you want add to clean?');" align="center"><a class="btn btn-xs btn-info" href="<?php echo site_url('admin/cleaning/update/'.$row->detail_id)?>"><span class="glyphicon glyphicon-bookmark"> Clean</span></a></td>
+                      <td  align="center"><a class="btn btn-xs btn-info" href="<?php echo site_url('admin/cleaning/update/'.$row->detail_id)?>"><span class="glyphicon glyphicon-bookmark"> Clean</span></a></td>
                       <?php  
                       }
                     ?>

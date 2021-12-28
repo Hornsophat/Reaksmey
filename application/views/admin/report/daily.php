@@ -34,7 +34,8 @@
     <div>
       <?php date_default_timezone_set("Asia/Phnom_penh"); ?>
       <center>
-        <h3><?php echo "&#x09;" . ucfirst($this->uri->segment(3)) . ' ' . ucfirst($this->uri->segment(2));?> </h3>
+        <!-- <h3><?php echo "&#x09;" . ucfirst($this->uri->segment(3)) . ' ' . ucfirst($this->uri->segment(2));?> </h3> -->
+        <h3>Customer Pay Today</h3>
         <?php echo $timenow = date("Y-M-d G:i A"); ?>
       </center>
       </br>
@@ -48,11 +49,13 @@
          <th>Customer Name</th>
          <th>Mobile</th>
          <th> User Name</th>
-         <th>Date Out</th>
+         <!-- <th>Date Out</th> -->
          <th>Payment Date</th>
          <th>Item Name</th>
-        
          <th>Amount</th>
+         <!-- <th>discount</th>
+         <th>Grand Total</th> -->
+        
        </tr>
       </thead>
       <tbody>

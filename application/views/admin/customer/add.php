@@ -15,7 +15,20 @@
       <a href="#">New</a>
     </li>
   </ul>
-
+  <form action="ins-form" method="post" enctype="multipart/form-data" >
+                                <div class="col-md-12 mt-4">
+                                    <div class="form-group">
+                                        <h5>Upload Contract in pdf</h5>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 form-group d-lg-flex align-items-center">
+                                    <label for="profile" class="control-label col-lg-3 p-0">pdf : </label>
+                                    <div class="col-lg-9 p-0">
+                                        <input type="file" name="pdffile" class="form-control" value="123" accept=".jpg,.jpeg,.png,.pdf">
+                                    </div>
+                                </div>
+                                </form>
   <div class="page-header">
     <h2>Adding <?php echo ucfirst($this->uri->segment(2));?></h2>
   </div>

@@ -74,7 +74,7 @@
 									</td>
 									
 								</tr>
-								<tr class="<?= $query->roleid != 38 ? 'hide': '' ?>" id="show_teacher">
+								<tr class="<?= $query->roleid != 38 ? '': '' ?>" id="show_teacher">
 									<td><label for="emailField">Select Teacher</label></td>
 									<td> : </td>
 									<td colspan="4">

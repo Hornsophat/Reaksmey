@@ -50,7 +50,7 @@
       ?>
 
    <div class="col-md-12">
-        <form method="post" action="<?php echo base_url();?>currencies/get_insert">
+        <form method="post" action="<?php echo base_url();?>admin_currencies/get_insert">
      
             <div class="form-group">
               <div class="col-md-3">

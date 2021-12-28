@@ -60,9 +60,9 @@
                 <th class="header">#</th>
                 <th class="yellow header headerSortDown">Roomtype</th>
                 <th class="yellow header headerSortDown">Time</th>
-                <th class="yellow header headerSortDown">Monday-Thoursday</th>
+                <!-- <th class="yellow header headerSortDown">Monday-Thoursday</th>
                 <th class="yellow header headerSortDown">Weekend</th>
-                <th class="yellow header headerSortDown">Cereymony</th>
+                <th class="yellow header headerSortDown">Cereymony</th> -->
                 <th class="yellow header headerSortDown">Month</th>
                 <th class="yellow header headerSortDown">Note</th>
                 <th class="yellow header headerSortDown"></th>
@@ -77,9 +77,9 @@
                 echo '<td>'.$row_id.'</td>';
                 echo '<td>'.$row['roomtype'].'</td>';
                 echo '<td>'.$row['time'].'</td>';
-                echo '<td>'.$row['price'].'</td>';
-                echo '<td>'.$row['price_weekend'].'</td>';
-                echo '<td>'.$row['price_cereymony'].'</td>';
+                // echo '<td>'.$row['price'].'</td>';
+                // echo '<td>'.$row['price_weekend'].'</td>';
+                // echo '<td>'.$row['price_cereymony'].'</td>';
                 echo '<td>'.$row['price_month'].'</td>';
                 echo '<td>'.$row['note'].'</td>';
                 echo '<td class="crud-actions">

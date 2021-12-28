@@ -57,6 +57,7 @@ class Checkin_model extends CI_Model {
 		$this->db->select('tbl_room.room_no as room_no');
 		$this->db->select('tbl_roomtype.type as room_type');
 		$this->db->select('tbl_customer.Family as customer_id');
+		$this->db->select('tbl_checkin.date_in as chd');
 		$this->db->select('tbl_customer.id as cid');
 		$this->db->select('tbl_staying.time as checkin_type');
 		$this->db->select('tbl_checkin.multi_checkin as m_ch');
@@ -69,7 +70,7 @@ class Checkin_model extends CI_Model {
 		$this->db->join('tbl_staying', 'tbl_staying.id = tbl_checkin.checkin_type','left');
 		
 		if($search_string){
-			$this->db->like('tbl_customer.Family', $search_string);
+			$this->db->like('tbl_checkin.date_in', $search_string);
 		}
 		
 		$this->db->where('checkouted',0);
@@ -190,15 +191,22 @@ class Checkin_model extends CI_Model {
     * @param array $data - associative array with data to store
     * @return boolean
     */
-    function update_checkin($id, $data, $detail)
+	function update_checkin($data_to_store, $detail,$id="")
     {
-		$this->db->where('id', $id);
-		$this->db->update('tbl_checkin', $data);
-
-		$this->db->where('checkin_id',$id);
-		$this->db->where('item_name','staying');
-		$this->db->update('tbl_checkin_detail',$detail);
-
+		if($id == "")
+		{
+			return false;
+		}
+		
+		if($this->db->where('id',$id)->update('tbl_checkin', $data_to_store))
+		{
+			$checkinDetail = $this->db->where('checkin_id',$id)
+			->where('item_name','staying')->update('tbl_checkin_detail',$detail);
+		}else{
+			return false;
+		}
+	
+	
 		$report = array();
 		$report['error'] = $this->db->_error_number();
 		$report['message'] = $this->db->_error_message();
@@ -232,9 +240,10 @@ class Checkin_model extends CI_Model {
 
 	function checkin_report()
 	{
-		$this->db->select('ck.*, ro.room_no, rot.type, cu.Family, cu.id, sty.time');
+		$this->db->select('ck.*, ro.room_no, rot.type, cu.Family, cu.id, sty.time,ckd.item_name,ckd.amount,ckd.date_start,ckd.date_end,ckd.old_kw,ckd.new_kw,ckd.room_id,ckd.qty');
 		$this->db->from('tbl_checkin ck');
 		$this->db->join('tbl_room ro', 'ck.room_no = ro.id', 'left');
+		$this->db->join('tbl_checkin_detail ckd', 'ckd.checkin_id = ck.id', 'left');
 		$this->db->join('tbl_roomtype rot', 'ro.type_id = rot.id', 'left');
 		$this->db->join('tbl_customer cu', 'ck.customer_id = cu.id');
 		$this->db->join('tbl_staying sty', 'ck.checkin_type = sty.id', 'left');
@@ -249,17 +258,16 @@ class Checkin_model extends CI_Model {
     {
 		$today = date('Y-m-d', time());  
 		
-		$this->db->select('ck.*, ro.room_no, cu.Family, sty.time, rot.type, sty.price, tbl_checkin_detail.amount');
-		$this->db->from('tbl_checkin ck');
-		$this->db->join('tbl_room ro', 'ck.room_no = ro.id ', 'left');
+		$this->db->select('ck.*, ro.room_no, cu.Family, sty.time, rot.type');
+		$this->db->from('tbl_reservation ck');
+		$this->db->join('tbl_room ro', 'ck.room_id = ro.id ', 'left');
 		$this->db->join('tbl_roomtype rot', 'ro.type_id = rot.id', 'left');
 		$this->db->join('tbl_customer cu', 'cu.id = ck.customer_id');
-		$this->db->join('tbl_staying sty', 'sty.id = ck.checkin_type');
-		$this->db->join('tbl_checkin_detail','tbl_checkin_detail.checkin_id = ck.id');
+		$this->db->join('tbl_staying sty', 'sty.id = ck.staying');
 		
 		// $this->db->where('checkouted', 0);
 		// $this->db->where('eject', 1);
-		$this->db->like('ck.date_in' , $today);
+		$this->db->like('ck.checkin_data' , $today);
 		$this->db->order_by('ck.id', 'DESC');
 		
 		$query = $this->db->get();
@@ -282,14 +290,14 @@ class Checkin_model extends CI_Model {
 		$this->db->join('tbl_staying sty', 'sty.id = ck.checkin_type');
 		
 		if($first_date!='' && $last_date!=''){
-            $this->db->where('date_in >= ',$first_date);
+            $this->db->where('new_month >= ',$first_date);
 
-            $this->db->where('date_in <= ',$last_date);
+            $this->db->where('new_month <= ',$last_date);
         }else{
-            $this->db->where('date_format(date_in ," %Y-%m-%d ")',$date_in);
+            $this->db->where('date_format(new_month ," %Y-%m-%d ")',$date_in);
         }
 		// $this->db->where('date_in >= ',  $last_week);
-		$this->db->order_by('ck.date_in', 'DESC');
+		$this->db->order_by('ck.new_month', 'DESC');
 		
 		$query = $this->db->get();
 		// return $query->result_array();
@@ -342,7 +350,7 @@ class Checkin_model extends CI_Model {
  	}
  	function get_extra_item($cid)
  	{
- 		return $this->db->query("SELECT *, cd.qty as dqty, cd.item_name as d_name, cd.price as dprice
+ 		return $this->db->query("SELECT *, cd.qty as dqty,cd.date_start as datefrom,cd.date_end as dateto,cd.old_kw as oldnum ,cd.new_kw as newnum,cd.item_name as d_name, cd.price as dprice
  			              FROM tbl_checkin_detail cd 
  						  LEFT JOIN tbl_item i 
  						  ON cd.item_name = i.p_name
@@ -429,6 +437,28 @@ class Checkin_model extends CI_Model {
 	public function getAllbanks(){
 		$query = $this->db->get('tbl_bank');
 		return $query->result();
+	}
+	public function getAllchk($id){
+		$this->db->select('tbl_checkin.*');
+	    $this->db->select('tbl_customer.Family as Family');
+		$this->db->select('tbl_customer.id as id');
+		$this->db->select('tbl_room.room_no as roomnumber');
+		$this->db->select('tbl_room.type_id as roomtype');
+		$this->db->select('tbl_customer.Passport as Passport');
+		$this->db->select('tbl_customer.Mobile as Mobile');
+		$this->db->select('tbl_checkin_detail.refun_amount as refun');
+		$this->db->select('tbl_checkin_detail.amount as priceitem');
+		$this->db->select('tbl_checkin_detail.room_id as room_num');
+		$this->db->select('tbl_reservation.checkin_data');
+			$this->db->from('tbl_checkin');
+			$this->db->join('tbl_customer', 'tbl_customer.id = tbl_checkin.customer_id','left');
+			$this->db->join('tbl_reservation', 'tbl_reservation.id = tbl_checkin.reserv_id','left');
+			$this->db->join('tbl_room', 'tbl_checkin.room_no = tbl_room.id ', 'left');
+			$this->db->join('tbl_checkin_detail', 'tbl_checkin.id = tbl_checkin_detail.checkin_id ', 'left');
+			$this->db->join('tbl_roomtype', 'tbl_roomtype.id=tbl_room.type_id');
+			$this->db->where('tbl_checkin.id', $id);
+			$result = $this->db->get();
+			return $result->result();
 	}
 }
 ?>

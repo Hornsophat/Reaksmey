@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://127.0.0.1/Raksmey';
+$config['base_url']	= 'http://127.0.0.1/chhara_apartment';
 
 /*
 |--------------------------------------------------------------------------
@@ -69,7 +69,7 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'English';
+$config['language']	= 'Khmer';
 
 /*
 |--------------------------------------------------------------------------

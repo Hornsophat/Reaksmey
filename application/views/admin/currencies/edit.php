@@ -53,7 +53,7 @@
 ?>
 
    <div class="col-md-12">
-        <form method="post" action="<?php echo base_url();?>currencies/edit_cur">
+        <form method="post" action="<?php echo base_url();?>admin_currencies/edit_cur">
             <input type="text" name="c_id" value="<?php echo $row->id;?>" hidden>
             <div class="form-group">
               <div class="col-md-3">

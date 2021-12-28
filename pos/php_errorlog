@@ -1,1 +1,0 @@
-[10-Nov-2020 16:19:51 Asia/Phnom_Penh] PHP Warning:  "continue" targeting switch is equivalent to "break". Did you mean to use "continue 2"? in /home/customer/www/hotelpos.anakutjobs.com/public_html/pos/app/third_party/dompdf/src/Dompdf.php on line 600

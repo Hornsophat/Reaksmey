@@ -24,7 +24,63 @@ class Customer_model extends CI_Model {
 		return $query->result_array(); 
     }  
     
-    
+    public function get_all_customer($id) 
+    {
+        $this->db->select('tbl_reservation.*');
+        $this->db->select('tbl_room.room_no ');
+        $this->db->select('tbl_roomtype.type ');
+        $this->db->select('tbl_customer.Family ');
+        $this->db->select('tbl_customer.Mobile ');
+        $this->db->select('tbl_customer.Gender ');
+        $this->db->select('tbl_customer.Passport ');
+        $this->db->select('tbl_customer.Country ');
+
+
+        $this->db->from('tbl_reservation');
+        $this->db->join('tbl_customer', 'tbl_customer.id = tbl_reservation.Customer_id','left');
+        $this->db->join('tbl_room', 'tbl_room.id = tbl_reservation.room_id','left');
+        $this->db->join('tbl_roomtype', 'tbl_roomtype.id = tbl_room.type_id','left');
+       
+        $this->db->where('tbl_customer.id', $id);
+        $this->db->group_by('tbl_customer.id', $id);
+        return $this->db->get()->result();
+    }
+
+    public function get_all_checkin($id) 
+    {
+        $this->db->select('ck.*, ro.room_no, rot.type, cu.Family, cu.id,cu.Mobile,cu.Gender,cu.Passport,cu.Country, sty.time,ckd.item_name,ckd.price as ckd_price,ckd.room_id,ckd.qty');
+		$this->db->from('tbl_checkin ck');
+        $this->db->join('tbl_checkin_detail ckd', 'ckd.checkin_id = ck.id', 'left');
+		$this->db->join('tbl_room ro', 'ck.room_no = ro.id', 'left');
+		$this->db->join('tbl_roomtype rot', 'ro.type_id = rot.id', 'left');
+		$this->db->join('tbl_customer cu', 'ck.customer_id = cu.id');
+		$this->db->join('tbl_staying sty', 'ck.checkin_type = sty.id', 'left');
+
+        $this->db->where('cu.id', $id);
+		$this->db->order_by('ck.id', 'DESC');
+        $this->db->group_by('ck.id', 'DESC');
+		$query = $this->db->get();
+		return $query->result();
+    }
+
+    public function get_all_item($id) 
+    {
+        $this->db->select('ck.*, ro.room_no, rot.type, cu.Family, cu.id,cu.Mobile,cu.Gender,cu.Passport,cu.Country, sty.time,ckd.item_name,ckd.price as ckd_price,ckd.room_id,ckd.qty,ckd.amount,ckd.date_start,ckd.date_end,ckd.old_kw,ckd.new_kw');
+		$this->db->from('tbl_checkin ck');
+        $this->db->join('tbl_checkin_detail ckd', 'ckd.checkin_id = ck.id', 'left');
+		$this->db->join('tbl_room ro', 'ck.room_no = ro.id', 'left');
+		$this->db->join('tbl_roomtype rot', 'ro.type_id = rot.id', 'left');
+		$this->db->join('tbl_customer cu', 'ck.customer_id = cu.id');
+		$this->db->join('tbl_staying sty', 'ck.checkin_type = sty.id', 'left');
+
+	   $this->db->where('cu.id', $id);
+		$this->db->order_by('ck.id', 'DESC');
+		$query = $this->db->get();
+		return $query->result();
+    }
+
+
+
     public function get_fields()
     
     {
@@ -46,18 +102,27 @@ class Customer_model extends CI_Model {
     public function get_customer($search_string=null, $order=null, $order_type='Asc', $limit_start=null, $limit_end=null)
     {
 	    
-		$this->db->select('*');
+		$this->db->select('tbl_customer.*');
+        $this->db->select('tbl_room.room_no');
+        $this->db->select('tbl_roomtype.type');
 		$this->db->from('tbl_customer');
+      
+
+        $this->db->join('tbl_reservation', 'tbl_reservation.Customer_id = tbl_customer.id', 'left');
+        $this->db->join('tbl_room', 'tbl_room.id = tbl_reservation.room_id', 'left');
+        $this->db->join('tbl_roomtype', 'tbl_roomtype.id = tbl_room.type_id', 'left');
+        
+
 
 		if($search_string){
-			$this->db->like('Family', $search_string);
+			$this->db->like('tbl_customer.Mobile', $search_string);
 		}
-		$this->db->group_by('id');
+		$this->db->group_by('tbl_customer.id');
 
 		if($order){
 			$this->db->order_by($order, $order_type);
 		}else{
-		    $this->db->order_by('id', $order_type);
+		    $this->db->order_by('tbl_customer.id', $order_type);
 		}
 
         if($limit_start && $limit_end){

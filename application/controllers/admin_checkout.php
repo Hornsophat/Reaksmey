@@ -306,223 +306,224 @@ class Admin_Checkout extends CI_Controller {
                                         ON b.id=ch.bank_id
                                         WHERE ch_dt.checkin_id = '$id' AND ch_dt.is_pay = 0 ")->result();
 
-        $is_payment = $this->db->where('checkin_id',$id)->where('is_pay',0)->update('tbl_checkin_detail',['is_pay'=>1]);
+        // $is_payment = $this->db->where('checkin_id',$id)->where('is_pay',0)->update('tbl_checkin_detail',['is_pay'=>1]);
         
-        $i = 1; 
-        $total = 0; 
-        $totals = 0; 
-        $tqty = 0;
-        $sales_total = 0;
-        $dicount_p = 0;
-        $extra_ch = 0;
-        $data_table = "";
-        $room_no = "";
-        $extra_charge = 0;
-        $deposit_price = 0;
-        $total_pay = 0;
-        $total_pay_riel = 0;
-        $dicount_text = '';
-        $total_extra = 0;
+        // $i = 1; 
+        // $total = 0; 
+        // $totals = 0; 
+        // $tqty = 0;
+        // $sales_total = 0;
+        // $dicount_p = 0;
+        // $extra_ch = 0;
+        // $data_table = "";
+        // $room_no = "";
+        // $extra_charge = 0;
+        // $deposit_price = 0;
+        // $total_pay = 0;
+        // $total_pay_riel = 0;
+        // $dicount_text = '';
+        // $total_extra = 0;
 
-        if($row_checkin->pay == 'unpay'){
-          $extra_charge = $row_checkin->extra_charges;
-        }
+        // if($row_checkin->pay == 'unpay'){
+        //   $extra_charge = $row_checkin->extra_charges;
+        // }
         
-              $data_table .= '<tbody>';
-        foreach ($checkin_data as $checkin) {
-            if($checkin->room_id > 0){
-                $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$i++.'</td>';
-                $data_table .= '<td colspan="2">'.$checkin->type.' ( '.$checkin->room_no.' )</td>';
-                $data_table .= '<td class="text-center">'.$checkin->price_more.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
-                $data_table .= '<td class="text-right">'.number_format($checkin->amount,2).'</td>';
-                $total += str_replace(',', '', number_format($checkin->amount,2));
-                $data_table .= '</tr>';
-                $payment_detail_data[] = [
-                                        'payment_id'        => '',
-                                        'checkindetail_id'  => $checkin->detail_id,
-                                        'room_id'           => $checkin->room_id,
-                                        'sale_id'           => null,
-                                        'item_name'         => $checkin->type.' ( '.$checkin->room_no.' )',
-                                        'status'            => 'room',
-                                        'amount'            => str_replace(',', '', number_format($checkin->amount,2))
-                                    ];
+        //       $data_table .= '<tbody>';
+        // foreach ($checkin_data as $checkin) {
+        //     if($checkin->room_id > 0){
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<td class="text-center">'.$i++.'</td>';
+        //         $data_table .= '<td colspan="2">'.$checkin->type.' ( '.$checkin->room_no.' )</td>';
+        //         $data_table .= '<td class="text-center">'.$checkin->price_more.'</td>';
+        //         $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
+        //         $data_table .= '<td class="text-right">'.number_format($checkin->amount,2).'</td>';
+        //         $total += str_replace(',', '', number_format($checkin->amount,2));
+        //         $data_table .= '</tr>';
+        //         $payment_detail_data[] = [
+        //                                 'payment_id'        => '',
+        //                                 'checkindetail_id'  => $checkin->detail_id,
+        //                                 'room_id'           => $checkin->room_id,
+        //                                 'sale_id'           => null,
+        //                                 'item_name'         => $checkin->type.' ( '.$checkin->room_no.' )',
+        //                                 'status'            => 'room',
+        //                                 'amount'            => str_replace(',', '', number_format($checkin->amount,2))
+        //                             ];
 
-            }else{
-                $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$i++.'</td>';
-                $data_table .= '<td colspan="2">'.$checkin->item_name.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->price.'</td>';
-                $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
-                $data_table .= '<td class="text-right">'.number_format($checkin->amount,2).'</td>';
-                $data_table .= '</tr>';
-                $total_extra += str_replace(',', '', number_format($checkin->amount,2));
-                $payment_detail_data[] = [
-                                        'payment_id'        => '',
-                                        'checkindetail_id'  => $checkin->detail_id,
-                                        'room_id'           => null,
-                                        'sale_id'           => null,
-                                        'item_name'         => $checkin->item_name,
-                                        'status'            => 'extra_item',
-                                        'amount'            => str_replace(',', '', number_format($checkin->amount,2))
-                                    ];
-            }
-        }
-        if($extra_charge > 0){
-            $data_table .= '<tr>';
-            $data_table .= '<td class="text-center">'.$i++.'</td>';
-            $data_table .= '<td colspan="3"><span style="margin:0px 5px 0px 10px"></span>
-                        Extra Charges</td>';
-            $data_table .= '<td class="text-center"></td>';
-            $data_table .= '<td class="text-right">'.number_format($extra_charge,2).'</td>';
-            $data_table .= '</tr>';
-            $total_extra += str_replace(',', '', number_format($extra_charge,2));
-            $payment_detail_data[] = [
-                                        'payment_id'        => '',
-                                        'checkindetail_id'  => null,
-                                        'room_id'           => null,
-                                        'sale_id'           => null,
-                                        'item_name'         => 'Extra Charges',
-                                        'status'            => 'extra_charges',
-                                        'amount'            => str_replace(',', '', number_format($extra_charge,2))
-                                    ];
-        }
-        if($sales){
-            foreach ($sales as $sale_res) {
-                $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$i++.'</td>';
-                $data_table .= '<td colspan="2">'.$sale_res->reference_no.'</td>';
-                $data_table .= '<td class="text-center">'.number_format($sale_res->grand_total,2).'</td>';
-                $data_table .= '<td class="text-center">1</td>';
-                $data_table .= '<td class="text-right">'.number_format($sale_res->grand_total,2).'</td>';
-                $data_table .= '</tr>';
-                $sales_total += str_replace(',', '', number_format($sale_res->grand_total,2));
-                $payment_detail_data[] = [
-                                        'payment_id'        => '',
-                                        'checkindetail_id'  => null,
-                                        'room_id'           => null,
-                                        'sale_id'           => $sale_res->id,
-                                        'item_name'         => $sale_res->reference_no,
-                                        'status'            => 'pos_sale',
-                                        'amount'            => str_replace(',', '', number_format($sale_res->grand_total,2))
-                                    ];
-            }
+        //     }else{
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<td class="text-center">'.$i++.'</td>';
+        //         $data_table .= '<td colspan="2">'.$checkin->item_name.'</td>';
+        //         $data_table .= '<td class="text-center">'.$checkin->price.'</td>';
+        //         $data_table .= '<td class="text-center">'.$checkin->qty.'</td>';
+        //         $data_table .= '<td class="text-right">'.number_format($checkin->amount,2).'</td>';
+        //         $data_table .= '</tr>';
+        //         $total_extra += str_replace(',', '', number_format($checkin->amount,2));
+        //         $payment_detail_data[] = [
+        //                                 'payment_id'        => '',
+        //                                 'checkindetail_id'  => $checkin->detail_id,
+        //                                 'room_id'           => null,
+        //                                 'sale_id'           => null,
+        //                                 'item_name'         => $checkin->item_name,
+        //                                 'status'            => 'extra_item',
+        //                                 'amount'            => str_replace(',', '', number_format($checkin->amount,2))
+        //                             ];
+        //     }
+        // }
+        // if($extra_charge > 0){
+        //     $data_table .= '<tr>';
+        //     $data_table .= '<td class="text-center">'.$i++.'</td>';
+        //     $data_table .= '<td colspan="3"><span style="margin:0px 5px 0px 10px"></span>
+        //                 Extra Charges</td>';
+        //     $data_table .= '<td class="text-center"></td>';
+        //     $data_table .= '<td class="text-right">'.number_format($extra_charge,2).'</td>';
+        //     $data_table .= '</tr>';
+        //     $total_extra += str_replace(',', '', number_format($extra_charge,2));
+        //     $payment_detail_data[] = [
+        //                                 'payment_id'        => '',
+        //                                 'checkindetail_id'  => null,
+        //                                 'room_id'           => null,
+        //                                 'sale_id'           => null,
+        //                                 'item_name'         => 'Extra Charges',
+        //                                 'status'            => 'extra_charges',
+        //                                 'amount'            => str_replace(',', '', number_format($extra_charge,2))
+        //                             ];
+        // }
+        // if($sales){
+        //     foreach ($sales as $sale_res) {
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<td class="text-center">'.$i++.'</td>';
+        //         $data_table .= '<td colspan="2">'.$sale_res->reference_no.'</td>';
+        //         $data_table .= '<td class="text-center">'.number_format($sale_res->grand_total,2).'</td>';
+        //         $data_table .= '<td class="text-center">1</td>';
+        //         $data_table .= '<td class="text-right">'.number_format($sale_res->grand_total,2).'</td>';
+        //         $data_table .= '</tr>';
+        //         $sales_total += str_replace(',', '', number_format($sale_res->grand_total,2));
+        //         $payment_detail_data[] = [
+        //                                 'payment_id'        => '',
+        //                                 'checkindetail_id'  => null,
+        //                                 'room_id'           => null,
+        //                                 'sale_id'           => $sale_res->id,
+        //                                 'item_name'         => $sale_res->reference_no,
+        //                                 'status'            => 'pos_sale',
+        //                                 'amount'            => str_replace(',', '', number_format($sale_res->grand_total,2))
+        //                             ];
+        //     }
             
-        }
+        // }
 
 
-            for ($j=$i; $j <=6 ; $j++) { 
-                $data_table .= '<tr>';
-                $data_table .= '<td class="text-center">'.$j.'</td>';
-                $data_table .= '<td colspan="2">'.''.'</td>';
-                $data_table .= '<td>'.''.'</td>';
-                $data_table .= '<td>'.''.'</td>';
-                $data_table .= '<td>'.''.'</td>';
-                $data_table .= '</tr>';
-            }
+        //     for ($j=$i; $j <=6 ; $j++) { 
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<td class="text-center">'.$j.'</td>';
+        //         $data_table .= '<td colspan="2">'.''.'</td>';
+        //         $data_table .= '<td>'.''.'</td>';
+        //         $data_table .= '<td>'.''.'</td>';
+        //         $data_table .= '<td>'.''.'</td>';
+        //         $data_table .= '</tr>';
+        //     }
 
-            $data_table .= '</tbody>';
-            $rows = '';
-            if ($row_checkin->reserv_id != 0) {
-                $rows = 6;
-                if($row_checkin->pay == 'unpay'){
-                  $deposit_price = $row_checkin->deposit;
-                }
+        //     $data_table .= '</tbody>';
+        //     $rows = '';
+        //     if ($row_checkin->reserv_id != 0) {
+        //         $rows = 6;
+        //         if($row_checkin->pay == 'unpay'){
+        //           $deposit_price = $row_checkin->deposit;
+        //         }
                 
-            }else{
-                $rows = 5;
-            }
-            $percentage = '%';
-            $discount = $row_checkin->discount;
-            if($row_checkin->percent_dis){
-                $discount = $row_checkin->percent_dis;
-            }
-            if(!$row_checkin->pay == 'unpay'){
-              $discount = 0;
-                if($discount !='' || $discount > 0){
-                  $discount_fix =  $discount;
-                  if (isset($discount_fix)) {
-                      $dis_fix = $discount_fix;
-                      $dpos = strpos($dis_fix, $percentage);
-                      if ($dpos !== false) {
-                          $pds = explode("%", $dis_fix);
-                          $dicount_text = '('.$row_checkin->percent_dis.')';
-                          $discount_usd = str_replace(',', '', number_format((($total * ((Float)($pds[0])) / 100)),2));
-                      } else {
-                          $discount_usd = str_replace(',', '', number_format((Float)($discount),2));
-                      }
-                  }
-                  $dicount_p =  $discount_usd;
-              }
-            }
+        //     }else{
+        //         $rows = 5;
+        //     }
+        //     $percentage = '%';
+        //     $discount = $row_checkin->discount;
+        //     if($row_checkin->percent_dis){
+        //         $discount = $row_checkin->percent_dis;
+        //     }
+        //     if(!$row_checkin->pay == 'unpay'){
+        //       $discount = 0;
+        //         if($discount !='' || $discount > 0){
+        //           $discount_fix =  $discount;
+        //           if (isset($discount_fix)) {
+        //               $dis_fix = $discount_fix;
+        //               $dpos = strpos($dis_fix, $percentage);
+        //               if ($dpos !== false) {
+        //                   $pds = explode("%", $dis_fix);
+        //                   $dicount_text = '('.$row_checkin->percent_dis.')';
+        //                   $discount_usd = str_replace(',', '', number_format((($total * ((Float)($pds[0])) / 100)),2));
+        //               } else {
+        //                   $discount_usd = str_replace(',', '', number_format((Float)($discount),2));
+        //               }
+        //           }
+        //           $dicount_p =  $discount_usd;
+        //       }
+        //     }
             
 
-            $total_pay = $total + $sales_total + $total_extra - ($deposit_price + $dicount_p);
-            $total_pay_riel​ = $total_pay * $rate;
-            if($row_checkin->pay == 'unpay'){
-               $pay = array('pay' => 'pay');
-                $this->db->where('id',$id)->update('tbl_checkin',$pay);
-                $status =  array('status' => 0);
-                $this->db->where('checkin_id',$id)->update('tbl_checkin_detail',$status); 
-            }
+        //     $total_pay = $total + $sales_total + $total_extra - ($deposit_price + $dicount_p);
+        //     $total_pay_riel​ = $total_pay * $rate;
+        //     if($row_checkin->pay == 'unpay'){
+        //        $pay = array('pay' => 'pay');
+        //         $this->db->where('id',$id)->update('tbl_checkin',$pay);
+        //         $status =  array('status' => 0);
+        //         $this->db->where('checkin_id',$id)->update('tbl_checkin_detail',$status); 
+        //     }
 
 
-            $data_table .='<tfoot>';
-                $data_table .= '<tr>';
-                $data_table .= '<th colspan="3" rowspan="'.$rows.'" style="vertical-align:center !important;"><span>Exch rate :</span><span>'.$rate.'&nbsp;៛</span></th>';
-                $data_table .= '<th class="text-right" style="white-space: nowrap !important;">Sub Total(USD)</th>';
-                $data_table .= '<th colspan="2" class="text-right" style="white-space: nowrap !important;">$ '.(number_format($total + $sales_total + $total_extra,2)).'</th>';
-                $data_table .= '</tr>';
+        //     $data_table .='<tfoot>';
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<th colspan="3" rowspan="'.$rows.'" style="vertical-align:center !important;"><span>Exch rate :</span><span>'.$rate.'&nbsp;៛</span></th>';
+        //         $data_table .= '<th class="text-right" style="white-space: nowrap !important;">Sub Total(USD)</th>';
+        //         $data_table .= '<th colspan="2" class="text-right" style="white-space: nowrap !important;">$ '.(number_format($total + $sales_total + $total_extra,2)).'</th>';
+        //         $data_table .= '</tr>';
 
-                if($row_checkin->reserv_id != 0){
-                    $data_table .= '<tr>';
-                    $data_table .= '<th class="text-right">Deposit</th>';
-                    $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($deposit_price,2).'</th>';
-                    $data_table .= '</tr>';
-                }
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right">Discount '.$dicount_text.'</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($dicount_p,2).'</th>';
-                $data_table .= '</tr>';
+        //         if($row_checkin->reserv_id != 0){
+        //             $data_table .= '<tr>';
+        //             $data_table .= '<th class="text-right">Deposit</th>';
+        //             $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($deposit_price,2).'</th>';
+        //             $data_table .= '</tr>';
+        //         }
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<th class="text-right">Discount '.$dicount_text.'</th>';
+        //         $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($dicount_p,2).'</th>';
+        //         $data_table .= '</tr>';
 
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right">Total Pay(Cash)</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($total_pay-$checkin->bank_amount,2).'</th>';
-                $data_table .= '</tr>';
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<th class="text-right">Total Pay(Cash)</th>';
+        //         $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($total_pay-$checkin->bank_amount,2).'</th>';
+        //         $data_table .= '</tr>';
 
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right">Total Pay('.$checkin->bank.')</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($checkin->bank_amount,2).'</th>';
-                $data_table .= '</tr>';
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<th class="text-right">Total Pay('.$checkin->bank.')</th>';
+        //         $data_table .= '<th colspan="2" style="text-align: right;">$ '.number_format($checkin->bank_amount,2).'</th>';
+        //         $data_table .= '</tr>';
 
-                $data_table .= '<tr>';
-                $data_table .= '<th class="text-right">Total Pay(RIEL)</th>';
-                $data_table .= '<th colspan="2" style="text-align: right;">៛ '.number_format($total_pay_riel​,0).'</th>';
-                $data_table .= '</tr>';         
+        //         $data_table .= '<tr>';
+        //         $data_table .= '<th class="text-right">Total Pay(RIEL)</th>';
+        //         $data_table .= '<th colspan="2" style="text-align: right;">៛ '.number_format($total_pay_riel​,0).'</th>';
+        //         $data_table .= '</tr>';         
 
-            $data_table .='</tfoot>';
-            $payment_data = [
-                'checkin_id'    => $id,
-                'user_name'       => $this->session->userdata('user_name'),
-                'date'          => date('Y-m-d H:i:s'),
-                'deposit'       => $deposit_price,
-                'discount'       => $discount,
-                'total'         => ($row_checkin->total + $sales_total),
-                'grand_total'   => $total_pay
+        //     $data_table .='</tfoot>';
+        //     $payment_data = [
+        //         'checkin_id'    => $id,
+        //         'user_name'       => $this->session->userdata('user_name'),
+        //         'date'          => date('Y-m-d H:i:s'),
+        //         'deposit'       => $deposit_price,
+        //         'discount'       => $discount,
+        //         'total'         => ($row_checkin->total + $sales_total),
+        //         'grand_total'   => $total_pay
 
-            ];
-        if($total_pay > 0){
-          $pay_data = $this->checkin_model->payment($payment_data,$payment_detail_data);
-        }
+        //     ];
+        // if($total_pay > 0){
+        //   $pay_data = $this->checkin_model->payment($payment_data,$payment_detail_data);
+        // }
 
-        $data['sales_total'] = $sales_total;
-        $data['total'] = $total;
-        $data['data_table'] = $data_table;
+        // $data['sales_total'] = $sales_total;
+        // $data['total'] = $total;
+        // $data['data_table'] = $data_table;
 
       if($this->checkout_model->checkout($checkin_id) == TRUE){
         $this->session->set_flashdata('flash_message', 'checkout');
         if($total_pay > 0){
+          // $this->load->view('admin/checkout/checkout_reciept', $data);
           $this->load->view('admin/checkout/checkout_reciept', $data);
         }else{
           redirect('admin/checkout/');
@@ -688,7 +689,8 @@ class Admin_Checkout extends CI_Controller {
             else
                 $c = $cusid->customer_id;
             $data['customer'] =  $this->checkout_model->load_customer_name($c);
-		$data['row_checkin']= $cusid ;//$this->db->query("SELECT * FROM sma_checkin WHERE customer_id='$c'")->row();
+		        $data['row_checkin']= $cusid ;
+            $this->db->query("SELECT * FROM tbl_checkin WHERE customer_id='$c'")->row();
             $this->load->view('admin/checkout/reciept', $data);
 
         }else{

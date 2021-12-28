@@ -81,7 +81,7 @@
         </div>
       </div>
 
-      <div class="col-md-3">
+      <!-- <div class="col-md-3">
         <div class="control-group">
           <label for="inputError" class="control-label">Price</label>         
           <div class="controls">
@@ -104,8 +104,8 @@
               <input type="text" id="" class="form-control" name="price_cereymony" value="<?php echo $staytime[0]['price_cereymony']; ?>" >
             </div>
           </div>
-         </div>
-  <div class="col-md-3">
+         </div> -->
+  <div class="col-md-6">
     <div class="control-group">
             <label for="inputError" class="control-label">Month(price)</label>         
             <div class="controls">

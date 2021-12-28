@@ -17,6 +17,7 @@ class Admin_room extends CI_Controller {
         parent::__construct();
         $this->load->model('roomtype_model');
         $this->load->model('room_model');
+        $this->load->model('customer_model');
         
         $this->load->helper('language');
         $this->lang->load("content", $this->session->userdata('language'));
@@ -238,6 +239,19 @@ class Admin_room extends CI_Controller {
     * Delete product by his id
     * @return void
     */
+
+    public function view($id=Null)
+    {
+        $data['customer'] = $this->room_model->get_all_room($id);
+
+
+        //load the view
+        $data['main_content'] = 'admin/room/view';
+        $this->load->view('includes/template', $data); 
+
+
+    }       
+
     public function delete()
     {
         //product id 

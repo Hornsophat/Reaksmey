@@ -54,7 +54,7 @@ $db['default']['hostname'] = 'localhost';
 // $db['default']['database'] = 'ci_samnak_neak';
 $db['default']['username'] = 'root';
 $db['default']['password'] = '';
-$db['default']['database'] = 'reaksmey_db';
+$db['default']['database'] = 'chhanra_apartment';
 
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';

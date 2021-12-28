@@ -50,7 +50,7 @@
       ?>
 
    <div class="col-md-12">
-        <form action="<?php echo base_url();?>currencies/exspanse_update" method="post">
+        <form action="<?php echo base_url();?>admin_currencies/exspanse_update" method="post">
              <input type="text" name="c_id" value="<?php echo $ex_up->tdid;?>" hidden>
             <div class="form-group">
               <div class="col-md-4">

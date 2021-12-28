@@ -1,4 +1,4 @@
-    
+ 
     <div class="container top">
 
       <ul class="breadcrumb">
@@ -15,7 +15,7 @@
       <div class="page-header users-header">
         <h2>
           <?php echo ucfirst($this->uri->segment(2));?> 
-          <a  href="<?php echo site_url("currencies/add"); ?>" class="btn btn-sm btn-success">Add a new</a>
+          <a  href="<?php echo site_url("admin_currencies/add"); ?>" class="btn btn-sm btn-success">Add a new</a>
         </h2>
       </div>
       
@@ -42,7 +42,7 @@
                 <td><?php echo $row->cur_name; ?></td>
                 <td><?php echo $row->cur_exchange; ?></td>
                 <td><?php echo $row->symbol; ?></td>
-                <td><a href="<?php echo base_url().'currencies/update/'.$row->id; ?>" data-toggle="tooltip" title="Edit"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;<a href="<?php echo base_url().'currencies/delete/'.$row->id;?>" data-toggle="tooltip" title="Delete" style="color:#ff0000;"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td><a href="<?php echo base_url().'admin_currencies/update/'.$row->id; ?>" data-toggle="tooltip" title="Edit"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;<a href="<?php echo base_url().'admin_currencies/delete/'.$row->id;?>" data-toggle="tooltip" title="Delete" style="color:#ff0000;"><span class="glyphicon glyphicon-remove"></span></a></td>
               </tr>
             <?php
               }

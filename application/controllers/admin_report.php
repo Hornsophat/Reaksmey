@@ -71,15 +71,14 @@ class Admin_report extends CI_Controller {
 
 	function daily()
 	{
-		$date = date('Y-m-d');
+		$from_date = $this->input->get('from_date');
+		$to_date = $this->input->get('to_date');
+		$type = $this->input->get('type');
+		$from_date = $from_date?$from_date:date('Y-m-d');
+		$to_date = $to_date?$to_date:date('Y-m-d ');
 		$where = "";
-
-		if($date){
-			$where .= "AND DATE(pay.date) = '$date' AND DATE(pay.date) = '$date'";
-		}
-		if($this->session->userdata('roleid')!= 1 && $this->session->userdata('roleid')!= 33){
-			$user_name = $this->session->userdata('user_name');
-			$where .= "AND pay.user_name ='$user_name'";
+		if($from_date && $to_date){
+			$where .= "AND DATE(pay.date) >= '$from_date' AND DATE(pay.date) <= '$to_date'";
 		}
 		if($type){
 			if($type == 'hotel'){
@@ -89,37 +88,36 @@ class Admin_report extends CI_Controller {
 				$where .= "AND pay_detail.status = 'pos_sale'";
 			}
 		}
-
 		$data = $this->db->query("SELECT
 									pay_detail.*, pay.date,
 									pay.user_name,
 									pay.grand_total,
 									checkin.date_in,
 									checkin.date_out,
+									checkin.price,
 									cus.Family,
-									cus.Mobile,
 									reserva.canceled,
+									cus.Mobile,
 									cus_re.Family AS re_family,
 									cus_re.Mobile AS re_mobile,
 									pay.id AS pay_id,
 									reserva.create_by as reserva_by,
 									reserva.checkin_data,
-									pay.reserva_id
-									
+									pay.reserva_id,
+									chdetail.refun_amount,
+									checkin.deposit as deposit	
 								FROM
 									tbl_payment_detail pay_detail
-								LEFT JOIN tbl_payments pay ON pay_detail.payment_id = pay.id
+								INNER JOIN tbl_payments pay ON pay_detail.payment_id = pay.id
 								LEFT JOIN tbl_checkin checkin ON checkin.id = pay.checkin_id
+								LEFT JOIN tbl_checkin_detail chdetail ON chdetail.detail_id=pay_detail.checkindetail_id
 								LEFT JOIN tbl_customer cus ON checkin.customer_id = cus.id
 								LEFT JOIN tbl_reservation reserva ON pay.reserva_id = reserva.id
 								LEFT JOIN tbl_customer cus_re ON reserva.Customer_id = cus_re.id
-								WHERE 1 =1  AND (canceled = 0 OR canceled IS NULL) {$where}  
-								ORDER BY pay.id ASC")->result();
+								WHERE 1 = 1 AND (canceled = 0 OR canceled IS NULL)  {$where}  ORDER BY pay.id ASC ")->result();
 
-		// var_dump($data);die;
 		$data_table ="";
-		$discount=0;
-        $discount_usd = 0;
+
 		$total_sale = 0;
 		$total_extra = 0;
 		$extra_item = 0;
@@ -150,7 +148,6 @@ class Admin_report extends CI_Controller {
 		$pay_id = '';
 		$a = 1;
 		foreach ($data as $row) {
-			
 			$data_table .='<tr>';
 				if($pay_id == $row->payment_id){
 					$data_table .='<td style="text-align:center;"></td>';
@@ -159,41 +156,39 @@ class Admin_report extends CI_Controller {
 					$data_table .='<td></td>';
 					$data_table .='<td></td>';
 					$data_table .='<td></td>';
-					$data_table .='<td></td>';
-          $data_table .='<td></td>';
 					$data_table .='<td>'.$row->item_name.'</td>';
-                    //$data_table .= '<td style="text-align: right;">$ '.number_format($dicount_p,2).'</td>';
-					//$data_table .='<td  style="text-align:right;">'.number_format($row->amount,2).'</td>';
-					$total +=str_replace(',', '', number_format($row->amount,2));
-					//$total_dicount +=str_replace(',', '', number_format($discount_usd,2));
+					$data_table .='<td>'.$row->qty.'</td>';
+					$data_table .='<td style="text-align:right;">'.number_format($row->price,2).'</td>';
+					$total +=str_replace(',', '', number_format($row->price,2));
 				}else{
-					if($row->reserva_id != ''){
+					if($row->reserva_id != '' || $row->date_in==''){
 						$data_table .='<td style="text-align:center;">'.$a++.'</td>';
-						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->checkin_data)).'</td>';
+						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
 						$data_table .='<td>'.$row->re_family.'</td>';
 						$data_table .='<td>'.$row->re_mobile.'</td>';
 						$data_table .='<td>'.$row->reserva_by.'</td>';
 						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
-						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
+						$data_table .='<td>'.date('d-m-Y ',strtotime($row->date)).'</td>';
 						$data_table .='<td>'.$row->item_name.'</td>';
-          //$data_table .= '<td  style="text-align: right;">$ '.number_format($dicount_usd,2).'</td>';
-						$data_table .='<td  style="text-align:right;">'.number_format($row->amount,2).'</td>';
-						$total +=str_replace(',', '', number_format($row->amount,2));
-						//$total_dicount +=str_replace(',', '', number_format($discount_usd,2));
+						$data_table .='<td style="text-align:right;">'.number_format($row->amount*(-1),2).'</td>';
+						$total +=str_replace(',', '', number_format($row->amount*(-1),2));
 					}else{
 						$data_table .='<td style="text-align:center;">'.$a++.'</td>';
-						$data_table .='<td>'.date('d-m-Y H:i;s',strtotime($row->date_in)).'</td>';
+						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
 						$data_table .='<td>'.$row->Family.'</td>';
 						$data_table .='<td>'.$row->Mobile.'</td>';
 						$data_table .='<td>'.$row->user_name.'</td>';
-						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date_out)).'</td>';
-						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
+						$data_table .='<td>'.date('d-m-Y ',strtotime($row->date_in)).'</td>';
 						$data_table .='<td>'.$row->item_name.'</td>';
-                        //$data_table .= '<td  style="text-align: right;">$ '.number_format($dicount_usd,2).'</td>';
-						$data_table .='<td  style="text-align:right;">'.number_format($row->amount,2).'</td>';
-						$total +=str_replace(',', '', number_format($row->amount,2));
-						//$total_dicount +=str_replace(',', '', number_format($discount_usd,2));
+						if ($row->refun_amount>0) {
+							$data_table .='<td style="text-align:right;">'.number_format(($row->amount-$row->refun_amount),2).'('.'Refun'.')'.'</td>';
+						}else{
+						$data_table .='<td style="text-align:right;">'.number_format(($row->amount),2).'</td>';
+						}
+						
+						$total +=str_replace(',', '', number_format(($row->amount-$row->refun_amount),2));
 					}
+					
 				}
 			$data_table .='</tr>';
 			$pay_id = $row->pay_id;
@@ -201,7 +196,7 @@ class Admin_report extends CI_Controller {
 
 		}
 		$data_table .='<tr>';
-			$data_table .='<th colspan="8" style="text-align:right;">Total: </th>';
+			$data_table .='<th colspan="7" style="text-align:right;">Total: </th>';
 			$data_table .='<th style="text-align:right;">'.number_format($total,2).'</th>';
 		$data_table .='</tr>';
 
@@ -209,9 +204,9 @@ class Admin_report extends CI_Controller {
 		$data['from_date'] = $from_date;
 		$data['to_date'] = $to_date;
 		$data['type'] = $type;
-		$data['data_table'] = $data_table;
 		$data['main_content'] = 'admin/report/daily';
-        $this->load->view('includes/template', $data); 
+		$data['data_table'] = $data_table;
+ 	    $this->load->view('includes/template', $data);
     }
 
 	function unpay_report()
@@ -269,6 +264,19 @@ class Admin_report extends CI_Controller {
 		// print_r($data['data']);die();
 		
 		$data['main_content'] = 'admin/report/checkin';
+	    $this->load->view('includes/template', $data); 
+	}
+
+	function  last_week_checkin_item()
+	{
+		$date_in = date("Y-m-d");
+        $first_date = $this->input->get('first_date');
+        $last_date = $this->input->get('last_date');
+		// $data['fields'] = $this->checkin_model->get_fields();
+		$data['data']  = $this->checkin_model->last_week_checkin($date_in,$first_date,$last_date);
+		// print_r($data['data']);die();
+		
+		$data['main_content'] = 'admin/report/item_report';
 	    $this->load->view('includes/template', $data); 
 	}
 
@@ -438,6 +446,8 @@ class Admin_report extends CI_Controller {
 									pay.grand_total,
 									checkin.date_in,
 									checkin.date_out,
+									checkin.price,
+									chdetail.room_no,
 									cus.Family,
 									reserva.canceled,
 									cus.Mobile,
@@ -448,6 +458,7 @@ class Admin_report extends CI_Controller {
 									reserva.checkin_data,
 									pay.reserva_id,
 									chdetail.refun_amount,
+									chdetail.qty,
 									checkin.deposit as deposit	
 								FROM
 									tbl_payment_detail pay_detail
@@ -492,27 +503,31 @@ class Admin_report extends CI_Controller {
 		$a = 1;
 		foreach ($data as $row) {
 			$data_table .='<tr>';
-				if($pay_id == $row->payment_id){
+				if($row->room_id == Null){
 					$data_table .='<td style="text-align:center;"></td>';
 					$data_table .='<td></td>';
 					$data_table .='<td></td>';
 					$data_table .='<td></td>';
 					$data_table .='<td></td>';
 					$data_table .='<td></td>';
-					$data_table .='<td>'.$row->item_name.'</td>';
-					$data_table .='<td style="text-align:right;">'.number_format($row->amount,2).'</td>';
-					$total +=str_replace(',', '', number_format($row->amount,2));
+					$data_table .='<td></td>';
+					$data_table .='<td></td>';
+					$data_table .='<td style="color:red">'.$row->item_name.'</td>';
+					$data_table .='<td style="text-align:right;color:red">'.number_format($row->qty,2).'</td>';
+					$data_table .='<td style="text-align:right;color:red">'.number_format($row->amount,2).'</td>';
+					 $totalitem +=str_replace(',', '', number_format($row->amount,2));
+					 $totalqty +=  $row->qty;
 				}else{
 					if($row->reserva_id != '' || $row->date_in==''){
-						$data_table .='<td style="text-align:center;">'.$a++.'</td>';
-						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
-						$data_table .='<td>'.$row->re_family.'</td>';
-						$data_table .='<td>'.$row->re_mobile.'</td>';
-						$data_table .='<td>'.$row->reserva_by.'</td>';
-						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
-						$data_table .='<td>'.$row->item_name.'</td>';
-						$data_table .='<td style="text-align:right;">'.number_format($row->amount*(-1),2).'</td>';
-						$total +=str_replace(',', '', number_format($row->amount*(-1),2));
+						// $data_table .='<td style="text-align:center;">'.$a++.'</td>';
+						// $data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
+						// $data_table .='<td>'.$row->re_family.'</td>';
+						// $data_table .='<td>'.$row->re_mobile.'</td>';
+						// $data_table .='<td>'.$row->reserva_by.'</td>';
+						// $data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
+						// $data_table .='<td>'.$row->item_name.'</td>';
+						// $data_table .='<td style="text-align:right;">'.number_format($row->amount*(-1),2).'</td>';
+					 
 					}else{
 						$data_table .='<td style="text-align:center;">'.$a++.'</td>';
 						$data_table .='<td>'.date('d-m-Y H:i:s',strtotime($row->date)).'</td>';
@@ -524,10 +539,14 @@ class Admin_report extends CI_Controller {
 						if ($row->refun_amount>0) {
 							$data_table .='<td style="text-align:right;">'.number_format(($row->amount-$row->refun_amount),2).'('.'Refun'.')'.'</td>';
 						}else{
-						$data_table .='<td style="text-align:right;">'.number_format(($row->amount),2).'</td>';
+						$data_table .='<td style="text-align:right;">'.number_format(($row->price),2).'</td>';
 						}
-						$total +=str_replace(',', '', number_format(($row->amount-$row->refun_amount),2));
+						$total +=str_replace(',', '', number_format(($row->price-$row->refun_amount),2));
+					
+						$data_table .='<td></td>';
+						$data_table .='<td></td>';
 					}
+					
 					
 				}
 			$data_table .='</tr>';
@@ -538,6 +557,9 @@ class Admin_report extends CI_Controller {
 		$data_table .='<tr>';
 			$data_table .='<th colspan="7" style="text-align:right;">Total: </th>';
 			$data_table .='<th style="text-align:right;">'.number_format($total,2).'</th>';
+			$data_table .='<th style="text-align:right;"></th>';
+			$data_table .='<th style="text-align:right;color:red">'.number_format($totalqty,2).'</th>';
+			$data_table .='<th style="text-align:right;color:red">'.number_format($totalitem,2).'</th>';
 		$data_table .='</tr>';
 
 		$data_table .='</tbody>';
@@ -548,6 +570,16 @@ class Admin_report extends CI_Controller {
 		$data['data_table'] = $data_table;
  	    $this->load->view('includes/template', $data);
 	}
+
+
+	function item_report($id=Null){
+
+		$data['data']  = $this->checkin_model->checkin_report();
+		
+		$data['main_content'] = 'admin/report/item_report';
+        $this->load->view('includes/template', $data); 	
+	}
+
 	function report_room_by_date(){
 
 		$year_arr = [];

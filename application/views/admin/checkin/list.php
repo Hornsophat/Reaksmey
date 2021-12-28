@@ -1,4 +1,4 @@
-    <div class="container top">
+<div class="container top">
       <style type="text/css">
         .hide{
           display: none;
@@ -14,7 +14,7 @@
         $hide = "";
         if($permission->type == 1)
         {
-          $hide = "hide";
+          $hide = "";
         }else if($permission->type == 2)
         {
           $hide = "";
@@ -34,8 +34,8 @@
       <div class="page-header users-header">
         <h2>
           <?php echo ucfirst($this->uri->segment(2));?> 
-          <a  style="margin-left: 10px;" href="<?php echo site_url("admin").'/'.$this->uri->segment(2); ?>/add" class="btn btn-sm btn-success"><?php echo lang('New Checkin');?></a>
-           <a style="margin-left: 10px;"  href="<?php echo site_url("admin").'/'.$this->uri->segment(2); ?>/multi_add" class="btn btn-sm btn-success"><?php echo lang('Multi Checkin');?></a>
+          <!-- <a  style="margin-left: 10px;" href="<?php echo site_url("admin").'/'.$this->uri->segment(2); ?>/add" class="btn btn-sm btn-success"><?php echo lang('New Checkin');?></a> -->
+           <!-- <a style="margin-left: 10px;"  href="<?php echo site_url("admin").'/'.$this->uri->segment(2); ?>/multi_add" class="btn btn-sm btn-success"><?php echo lang('Multi Checkin');?></a> -->
           <!-- <a style="margin-left: 10px;"  href="<?php echo site_url();?>admin_checkin/read_card" class="btn btn-sm btn-primary"><?php echo lang('Read card');?></a> -->
 
           <!-- <a href="<?php echo site_url();?>admin_checkin/read_card" class="btn btn-primay">read card</a> -->
@@ -82,7 +82,7 @@
             echo form_open('admin/checkin', $attributes);
      
               echo form_label(lang('Search:'), 'search_string');
-              echo form_input('search_string', $search_string_selected, 'class="form-control" placeholder="search customer"');
+              echo form_input('search_string', $search_string_selected, 'class="form-control" placeholder="ថ្ងៃបង់ប្រាក់"');
 
               echo form_label(lang('Order by:'), 'order');
               echo form_dropdown('order', $options_checkin, $order, 'class="span2 form-control"');
@@ -97,23 +97,27 @@
             echo form_close();
 
             ?>
-            <!-- <div class="col-sm-5 pull-right" style="position: relative; top: -37px;">
+            <div class="col-sm-5 pull-right" style="position: relative; top: -37px;">
               <div class="col-sm-4">
                 
               </div>
               <div class="col-sm-4">
                   <div class="form-group">
-                    <button  class="btn btn-primary all_checkout"><?php echo lang('CheckOut');?></button>
+                    <button  class="btn btn-danger all_checkout"><?php echo lang('CheckOut');?></button>
                   </div>
               </div>
-              <div class="col-sm-4">
+              <!-- <div class="col-sm-4">
                   <div class="form-group">
                     <button  class="btn btn-primary all_payment"><?php echo lang('Payment');?></button>
                   </div>
-              </div>
-            </div> -->
+              </div> -->
+            </div>
+            
 
-
+          </div>
+          <div style="margin-left:60%">
+            <a  href="report/payment_report" class="btn btn-success">របាយការណ៍អតិថិជនបានបង់</a>
+            <a  href="report/unpay" class="btn btn-warning">របាយការណ៍អតិថិជនមិនទាន់បង់</a>
           </div>
 
           <?php 
@@ -132,20 +136,22 @@
             echo $timenow = date("Y-M-d G:i A");
           ?>
           <div class="">
-            <table class="table table-striped table-bordered table-condensed" style="white-space: nowrap;">
+          <table class="table table-striped table-bordered table-condensed" style="white-space: nowrap;">
               <thead>
                 <tr style="text-align: center !important;">
-                  <th class="header">#</th>
+                <th><input type="checkbox"></th>
                   <!-- <th class="yellow header headerSortDown"><?php echo lang('ReserveID');?></th> -->
                   <th class="yellow header headerSortDown"><?php echo lang('Customer');?></th>
                   <th class="yellow header headerSortDown"><?php echo lang('Date In');?></th>
                   <th class="yellow header headerSortDown"><?php echo lang('Date Out');?></th>
+                  <th class="yellow header headerSortDown">Payment Date</th>
                   <th class="yellow header headerSortDown"><?php echo lang('Room Type');?></th>
                   <th class="yellow header headerSortDown"><?php echo lang('Room Number');?></th>
                   <th class="yellow header headerSortDown"><?php echo lang('CheckIn Type');?></th>
                   <th class="yellow header headerSortDown"><?php echo lang('Duration');?></th>
+                  <th class="yellow header headerSortDown">តម្លៃសរុប</th>
                   <th class="yellow header headerSortDown"><?php echo lang('payment');?></th>
-                  <th class="yellow header headerSortDown" colspan="6"  style="text-align:center;"><?php echo lang('Action');?></th>
+                  <th class="yellow header headerSortDown" colspan="7"  style="text-align:center;"><?php echo lang('Action');?></th>
                 </tr>
               </thead>
               <tbody>
@@ -159,7 +165,7 @@
                     //$disout = "disabled";
                     $disout = '';
                   }else{
-                    $paid = '<span class="label label-success">Paid</span>';
+                    $paid = '<span class="label label-success">paid</span>';
                     $disabled = "disabled";
                   }
                   $background = "";
@@ -178,27 +184,42 @@
                   $d_out = $row['date_out'];
                   $m_ch  = $row['m_ch'];
                   $mul  = $row['multi_checkin'];
-
                   $ro_no = $this->checkout_model->get_room_no_by_checkin_id($row['id']);
                   $type = $this->checkout_model->get_room_type_by_checkin_id($row['id']);
                   echo '<tr style="'.$background.'">';
                   echo '<td '.$onclick.'><input type="checkbox" value="'.$row['id'].'" name="ch_out" id="ch_out" class="ch_out"></td>';
                   // echo '<td>'.$row['reserv_id'].'</td>';
                   echo '<td '.$onclick.'>'.$row['customer_id'].'</td>';
-                  echo '<td '.$onclick.'>'.date('d-m-Y H:i:s',strtotime($row['date_in'])).'</td>';
+                  echo '<td '.$onclick.'>'.date('Y-m-d').'</td>';
                   echo '<td '.$onclick.'>'.date('d-m-Y H:i:s',strtotime($row['date_out'])).'</td>';
+                  echo '<td '.$onclick.'>'.date('Y-m-d ',strtotime($row['date_in'])).'</td>';
                   //echo '<td>'.$row['room_type'].'</td>';
                   echo '<td '.$onclick.'>'.$type.'</td>';
                   echo '<td '.$onclick.'>'.$ro_no.'</td>';
                   echo '<td '.$onclick.'>'.$row['checkin_type'].'</td>';
                   echo '<td '.$onclick.'>'.$row['staying'].'</td>';
+                  // echo '<td>'.$row['deposit'].'</td>';
+                  echo '<td>'.number_format($row['price'],2).'</td>';
                   echo '<td>'.$paid.'</td>';
-
+                  
                   $customer_name = $this->customer_model->get_customer_id($row['customer_id']);
-                  echo '<!--  <td class="'.$hide.'">
-                    <a href="'.site_url("admin").'/checkin/update/'.$row['id'].'" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-edit"></span></a> 
+                  echo  '<td>
+                  
+                  <a href="'.site_url("admin").'/extra/'.$row['id'].'/'.$customer_name->id.'" class="btn btn-sm btn-primary" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-add">Extra item</span></a> 
+                  
+                  </td> 
+                  <td>
+                    <a href="'.site_url("admin_checkin").'/payment_method/'.$row['id'].'/'.$customer_name->id.'" class="btn btn-sm btn-success" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-add">Payment</span></a> 
                     
-                    </td> -->
+                    </td> 
+                    <td>
+                    <a href="'.site_url("admin").'/reciept/'.$row['id'].'/'.$row['cid'].'" class="btn btn-sm btn-warning" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-add">Preview Invoice</span></a> 
+                    
+                    </td> 
+                  <td>
+                  <a  href="'.site_url("admin").'/checkout/out/'.$row['id'].'" class="btn btn-sm btn-danger" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-add">Leave</span></a> 
+                  
+                  </td>   
                     <td> 
                       <div class="dropdown">
                         <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -207,21 +228,26 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 
-                          <li style="display:none;">
+                          <li style="display:none">
                               <a href="'.site_url("admin").'/checkin/update/'.$row['id'].'" class="" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-edit text-info"> Edit</span></a> 
                           </li>';
                           
                           echo '<li>
                               <a href="'.site_url("admin").'/extra/'.$row['id'].'" class="" data-toggle="tooltip" title="Extra Item" id="btnDel"><span class="glyphicon glyphicon-plus text-success"> Extra Item</span></a>
                           </li>';
-                      if($row['pay'] != 'pay'){
-                        echo '<li>
-                              <a href="#" data="'.$row['id'].'" class="btnwrite" data-toggle="tooltip" title="write card" name="btnwrite" id="btnwrite"><span class="glyphicon glyphicon-inbox text-primary"> Write Card</span></a>
-                          </li>
-                          <li>
-                              <a href="#" data="'.$row['id'].'" class="btnDis" data-toggle="tooltip" title="discount" name="btnDis" id="'.$row['id'].'"><span class="glyphicon glyphicon-minus text-success"> Discount</span></a>
-                          </li>';
-                        }
+                          echo '<li>
+                          <a href="'.site_url("admin").'/checkin/update/'.$row['id'].'" class="" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon glyphicon-edit text-info"> Edit</span></a> 
+                      </li>';
+                          
+                      
+                      // if($row['pay'] != 'pay'){
+                      //   echo '<li>
+                      //         <a href="#" data="'.$row['id'].'" class="btnwrite" data-toggle="tooltip" title="write card" name="btnwrite" id="btnwrite"><span class="glyphicon glyphicon-inbox text-primary"> Write Card</span></a>
+                      //     </li>
+                      //     <li>
+                      //         <a href="#" data="'.$row['id'].'" class="btnDis" data-toggle="tooltip" title="discount" name="btnDis" id="'.$row['id'].'"><span class="glyphicon glyphicon-minus text-success"> Discount</span></a>
+                      //     </li>';
+                      //   }
                          echo ' <li role="separator" class="divider"></li>
                           <li>';
                           if($row['checkout'] == 1){
@@ -229,15 +255,13 @@
                           }else{
                              echo '<a onclick="return confirm('."'Are you sure you want to Checkout this item?'".');" href="'.site_url("admin").'/checkout/out/'.$row['id'].'" class="" data-toggle="tooltip" title="Checkout" id="btnDel" '.$disout.'><span class="glyphicon glyphicon-log-in text-danger">'.lang('CheckOut').' </span></a>';
                           }
-                          
-                        echo '</li>
-                          <li>';
+
                           if($row['pay'] == 'pay'){
                                 echo '<a  href="javascript:void(0)" class="" data-toggle="tooltip" title="Payment" id="btnDel"  disabled="disabled"><span class="glyphicon glyphicon-bookmark text-success">'.lang('Payment').'</span></a>';
                           }else{
                             echo '<a onclick="return confirm('."'Are you sure you want to Payment this item?'".');" href="'.site_url("admin_checkin").'/payment_method/'.$row['id'].'/'.$customer_name->id.'" class="" data-toggle="tooltip" title="Payment" id="btnDel" '.$disable_pay.'><span class="glyphicon glyphicon-bookmark text-success">'.lang('Payment').'</span></a>';
                           }
-                          echo '<a href="'.site_url("").''.'admin_checkin/'.'edit_checkin/'.$row['id'].'" class="" data-toggle="tooltip" title="Edit Checkin" id="btnDel" '.$disable_pay.'><span class="glyphicon glyphicon-bookmark text-success">'.lang('edit_checkin').'</span></a>';
+                          // echo '<a href="'.site_url("").''.'admin_checkin/'.'edit_checkin/'.$row['id'].'" class="" data-toggle="tooltip" title="Edit Checkin" id="btnDel" '.$disable_pay.'><span class="glyphicon glyphicon-bookmark text-success">'.lang('edit_checkin').'</span></a>';
                           echo '</li>
                         </ul>
                       </div>
@@ -405,7 +429,7 @@
         $.ajax({
            type: "get",
            dataType : 'json',
-               url:"<?php echo site_url()?>admin/view_checkin", 
+              //  url:"<?php echo site_url()?>admin/view_checkin", 
                data: {checkin_id : id},
                async:false,
                success: function (result) {

@@ -14,7 +14,7 @@ if (isset($_GET['last_date']))
           <a  href="" class="btn btn-sm btn-success"  onClick="PrintElem('#main_div')" ><span class="glyphicon glyphicon-print"></span>Print</a>
         </div>
           <div class="col-sm-10 pull-right" style="text-align: right;">
-            <form class="form-inline" role="form" method="get" action="<?php echo site_url('currencies/expense_list');?>">
+            <form class="form-inline" role="form" method="get" action="<?php echo site_url('admin_currencies/expense_list');?>">
               <div class="form-group">
                 <label for="email">ចាប់ពីថ្ងៃ ទី </label>
                 <div class="input-group date input-append" id="fromdatetime">
@@ -54,10 +54,10 @@ if (isset($_GET['last_date']))
       <div class="page-header users-header">
         <h2>
           <?php echo ucfirst($this->uri->segment(2));?> 
-          <a  href="<?php echo site_url("currencies").'/'.$this->uri->segment(3); ?>/add_exspanse" class="btn btn-sm btn-success">Add a new</a>
+          <a  href="<?php echo site_url("admin_currencies").'/'.$this->uri->segment(3); ?>/add_exspanse" class="btn btn-sm btn-success">Add a new</a>
         </h2>
       </div>
-      
+      <div id="main_div">
       <div class="row">
         <div class="span12 columns col-sm-12">
           <table class="table table-striped table-bordered table-condensed">
@@ -83,7 +83,7 @@ if (isset($_GET['last_date']))
                 <td><?php echo $row->ex_type; ?></td>
                 <td>$ <?php echo number_format($row->amount,3); ?></td>
                 <td><?php echo $row->note; ?></td>
-                <td><a href="<?php echo base_url().'currencies/update_expenes/'.$row->tdid; ?>" data-toggle="tooltip" title="Edit"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;<a href="<?php echo base_url().'currencies/delete_expenes/'.$row->tdid;?>" data-toggle="tooltip" title="Delete" style="color:#ff0000;"><span class="glyphicon glyphicon-remove"></span></a></td>
+                <td><a href="<?php echo base_url().'admin_currencies/update_expenes/'.$row->tdid; ?>" data-toggle="tooltip" title="Edit"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;<a href="<?php echo base_url().'admin_currencies/delete_expenes/'.$row->tdid;?>" data-toggle="tooltip" title="Delete" style="color:#ff0000;"><span class="glyphicon glyphicon-remove"></span></a></td>
               </tr>
               
             <?php
@@ -98,7 +98,7 @@ if (isset($_GET['last_date']))
           </table>
 
          
-
+</div>
       </div>
     </div>
 

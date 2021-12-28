@@ -8,7 +8,7 @@
           </a> 
         </li>
         <li>
-          <a href="<?php echo site_url("currencies/expense_list")?>">
+          <a href="<?php echo site_url("admin_currencies/expense_list")?>">
             <?php echo lang('add_expense');?>
           </a> 
         </li>
@@ -50,7 +50,7 @@
       ?>
 
    <div class="col-md-12">
-        <form action="<?php echo base_url();?>currencies/exspanse_insert" method="post">
+        <form action="<?php echo base_url();?>admin_currencies/exspanse_insert" method="post">
      
             <div class="form-group">
               <div class="col-md-4">

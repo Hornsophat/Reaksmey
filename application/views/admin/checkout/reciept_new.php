@@ -110,38 +110,44 @@
         <div id="receiptData">
             <div class="no-print"></div>
             <div id="receipt-data">
-                <div class="text-center" style="text-align: center; clear: both; padding-bottom:0px;margin-top:22px">
-                   <div style="margin-left:100px"> <img class="" src="<?php echo site_url('assets/images/photo_2021-02-01_07-59-25.jpg'); ?>" alt="Palm River Hotel" style=' float: left; clear: both;margin-top:-20px;border-radius: 10px;'></div>
-                   <br><br><br><br><br>
-                    <b><h3 style="text-transform:uppercase; font-family:'Khmer OS Muol Light'; color: #674343; font-size: 20px; padding-top:20px;">សណ្ឋាគារ រស្មីមនោរម្យ</h3><b>
-                    <h3 style="text-transform:uppercase; font-family:'Elephant'; color: #674343; font-size: 12px; padding-top:5px;">RAKSMEY MONOROM HOTEL</h3>
-                    
-                    <p class="adr" style="text-align:center; font-family:'Khmer OS'; font-size:10px;margin-top:12px; "><b>អាស័យដ្ឋាន៖​</b> (ទល់មុខស្រះទឹកដើមស្រល់​​ កាស៊ីណូ​ ផ្លូវដីស) ស្ថិតនៅភូមិសាមគ្គីមានជ័យ សង្កាត់ប៉ោយប៉ែត ក្រុងប៉ោយប៉ែត ខេត្តបន្ទាយមានជ័យ</p>
-                    <p class="pho" style="padding-left: 0px !important;margin-right:35px;">Tel: 015 77 83 83 (Smart)</p>
-                    <p class="pho" style="padding-left: 0px !important;"> 017 77 83 83 (Cellcard)</p>
-                    <p class="pho" style="padding-left: 0px !important;"> 067 77 83 83 (Metfone)</p>
-                    <b><p class="pho" style="padding-left: 0px !important;font-family:Khmer OS;">Facebook Page:សណ្ឋាគារ រស្មីមនោរម្យ-Raksmey Monorom Hotel </p></b>
+                <div class="" style="text-align: center; clear: both; padding-bottom:0px;margin-top:22px">
+                   <div style="margin-right:70px;margin-top:50px"> <img class="" src="<?php echo site_url('assets/login/images/chhanra.JPG'); ?>" alt="Palm River Hotel" style=' float: left; clear: both;margin-top:-50px;border-radius: 10px;width:130px;'></div>
+                 
+                    <b><h3 style="margin-right:70px;text-transform:uppercase; font-family:'Khmer OS Muol Light'; color: #674343; font-size: 20px; padding-top:-50px;">ទិត្យ​ ធារ៉ា អាផាតមែន</h3><b>
+                    <h3 style="margin-right:70px;text-transform:uppercase; font-family:'Elephant'; color: #674343; font-size: 14px; padding-top:5px;">Tith Chhara Apartment</h3>
+                    <!--<b><p class="pho" style="padding-left: 0px !important;">Website: https://rothsingvilla.com  </p></b>-->
                     </p>
                 </div>
-                <div style='float: left; font-size:8px'>Invoice Number
+                <br>
+                <div style="text-align:center">
+                      <p class="adr" style=" font-size:14px;margin-top:16px;font-family:Khmer OS "> <b style="color:black;font-size:14px">ផ្ទះលេខ ២០​ ផ្លូវលេខ ២៨៩ សង្កាត់បឹងកក់ ខណ្ឌទួលគោក រាជធានីភ្នំពេញ</p>
+                     <p class="adr" style="font-size:10px;margin-top:-14px; "> <b style="color:black;font-size:14px">#20 Street 289 Sangkat Beoungkak 1 Khan Toul Kork</p>
+                    <p class="pho" style="font-size:14px">+85512841342/ +85517917979</p>
+                    <p class="pho" style="font-size:14px;">Email: tith.chhara@hotmail.com</p>
+                </div>
+                <p style="text-align: center;border-bottom:1px solid black; font-weight: 500;padding:0px !important;margin:0px !important;"></p>
+                <center>
+                <h5 style="font-family:Khmer OS;font-weight:bold;font-size:20px;">បង្កាន់ដៃទទួលប្រាក់ / RECEIPT</h5>
+                </center>
+                <div style='float: left; font-size:14px'>Invoice Number
                     <br>Date
                     <br>Cashier Name
                 </div>
-                <div style='float: left; margin-left:2px; font-size:8px;'>:
+                <div style='float: left; margin-left:2px; font-size:14px;'>:
                     <?php echo date('Ym-',strtotime($row_checkin->date_in)).str_pad($row_checkin->id, 6, "0", STR_PAD_LEFT);  ?>
                     <br>:
                     <?php echo date('Y-m-d H:s:i')?>
                     <br>:
                     <?php echo $this->session->userdata('user_name'); ?>
                 </div>
-                <div style='float: right; margin-left:20px; font-size:8px;'>:
+                <div style='float: right; margin-left:20px; font-size:14px;'>:
                   <?php echo $customer->Family?>
                     <br>:
                     <?php echo date('Y-m-d',strtotime($row_checkin->date_in))?>
                     <br>:
                     <?php echo date('Y-m-d',strtotime($row_checkin->date_out))?>
                 </div>
-                 <div style='float: right; font-size:8px;'>
+                 <div style='float: right; font-size:14px;'>
                     Customer  
                     <br>Checkin 
                     <br>Checkout 
@@ -152,7 +158,7 @@
                         <tr>
                             <td class="center">No</td>
                             <td colspan="2">Room</td>
-                            <td class="center">Sub Total</td>
+                            <td class="center">Price</td>
                             <td class="center">Quantity</td>
                             <td class="center">Total</td>
                         </tr>
@@ -162,7 +168,7 @@
                     ?>
                 </table>
                 <p style="text-align: center;border-bottom:1px solid black; font-weight: 500;padding:0px !important;margin:0px !important;"></p>
-                <div class="well well-sm" style="text-align:center; border:none; background:none; font-size:8px;">
+                <div class="well well-sm" style="text-align:center; border:none; background:none; font-size:14px;">
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-6 pull-left">
@@ -173,11 +179,9 @@
                             </div>
                         </div>
                            <br>
-                                <br> <br>
-                                <br><br>
                                 
                         <div class="row" style="margin-top: 35px; text-align: center;">
-                                <p style="font-size:8px;font-family:'Khmer OS'; ">អរគុណសម្រាប់ការស្នាក់នៅក្នុងសណ្ឋាគារ រស្មីមនោរម្យ <br> Thank you for staying at RAKSMEY MONOROM HOTEL</p>
+                                <p style="font-size:14px;font-family:'Khmer OS'; ">អរគុណសម្រាប់ការស្នាក់នៅក្នុងទិត្យ​ ធារ៉ា អាផាតមែន <br> Thank you for staying at Tith Chhara Apartment</p>
                                 
                                
                         </div>

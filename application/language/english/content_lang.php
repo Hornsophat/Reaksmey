@@ -8,12 +8,17 @@
     $lang['View Details'] = "View Details";
     
     $lang['Customer'] = "Customer";
-    $lang['Today Check-Out !'] = "Today Check-Out !";
+    $lang['Today Check-Out !'] = "Check-Out !";
     $lang['Today Check-In'] = "Today Check-In";
     $lang['System'] = "System";
     $lang['Config Wizard'] = "Config Wizard";
-    $lang['Checkout'] = "Checkout";
+    $lang['Checkout'] = "Checkout All";
+    $lang['payment_date'] = "Payment Date";
+    $lang['start_date'] = "Start Date";
+    $lang['end_date'] = "End Date";
     $lang['Checkin'] = "Checkin";
+    $lang['roomtype'] = "Room Type";
+    $lang['room'] = "Room Number";
     $lang['Reservation'] = "Reservation";
     $lang['User Profile'] = "User Profile";
     $lang['Setting'] = "Create User";

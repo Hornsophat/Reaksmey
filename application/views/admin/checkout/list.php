@@ -46,8 +46,8 @@
 
             echo form_close();
             ?>
-            <div class="col-sm-3 pull-right" style="position: relative; top: -37px">
-              <div class="col-sm-7 hide">
+            <!-- <div class="col-sm-3 pull-right" style="position: relative; top: -37px">
+              <div class="col-sm-7">
                 <div class="form-group">
                   <select class="form-control customer_out" name="customer_out" id="customer_out">
                     <option value=""> select customer </option>
@@ -58,7 +58,7 @@
                     } ?>
                   </select>
                 </div>
-              </div>
+              </div> -->
               <!-- <div class="col-sm-4">
                 <div class="form-group">
                   <button  class="btn btn-primary all_reciept">Reciept By Customer</button>
@@ -72,10 +72,10 @@
           echo $timenow = date("Y-M-d G:i A");
           ?>
 
-          <form name="form_checkout" class="form_checkout" id="form_checkout" method="post" action="<?php echo site_url('admin/get_reciept_all')?>">
-            <div class="col-sm-12 store_check hide"></div>
-            <div class="store_customer hide"></div>
-          </form>
+          <!-- <form name="form_checkout" class="form_checkout" id="form_checkout" method="post" action="<?php echo site_url('admin/get_reciept_all')?>">
+            <div class="col-sm-12 store_check "></div>
+            <div class="store_customer "></div>
+          </form> -->
 
           <table style="text-align:center; font-size:12px;" class="table table-striped table-bordered table-condensed">
             <thead>
@@ -90,6 +90,7 @@
                 <th class="yellow header headerSortDown"><?php echo lang('CheckIn Type');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Staying');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Payment');?></th>
+                <th class="yellow header headerSortDown">តម្លៃសរុប</th>
                 <th class="yellow header headerSortDown"><?php echo lang('User');?></th>
                 <th style="text-align:center"class="yellow header headerSortDown" colspan="3"><?php echo lang('Action');?></th>
               </tr>
@@ -115,12 +116,13 @@
                 echo '<td>'.$row['checkin_type'].'</td>';
                 echo '<td>'.$row['staying'].'</td>';
                 echo '<td>'.$payment.'</td>';
+                echo '<td>'.number_format($row['price'],2).'</td>';
                 echo '<td>'.$row['user'].'</td>';
                 echo '<td>
                 <a href="'.site_url("admin").'/reciept/'.$row['id'].'/'.$row['cid'].'" class="btn btn-sm btn-info" data-toggle="tooltip" title="Reciept" id="btnEdit"><span class="">'.lang('Reciept').'</span></a>                   
               </td>';
               echo '<td><button type="button" value="'.$row['id'].'" id="btnpay" onclick="pay('.$row['id'].')" class="btn btn-sm btn-success" '.$disabled.'>'.lang('Payment').'</button></td>';
-              echo '<td><a onclick="return confirm('."'Are you sure you want to Eject this item?'".');" href="'.site_url("admin").'/eject/'.$row['id'].'" class="btn btn-sm btn-info">'.lang('Eject').'</td>';
+              echo '<td><a  href="'.site_url("admin").'/eject/'.$row['id'].'" class="btn btn-sm btn-info">'.lang('Eject').'</td>';
               echo '</tr>';
             }
             ?>
@@ -149,15 +151,13 @@
       // });
       function pay(id) {
 
-        var result = confirm("Are you sure you want to Confirm this item ?");
+        var result = confirm("Are you sure you want to Payment this item ?");
         if (result) {
           $.ajax({
             url : "<?php echo site_url('admin/pay'); ?>/" + id,
             success : function(response) {
-              var con = confirm('Payment is successfully!');
-              if(con == true) {
                 location.reload();
-              }
+              
               // $("#lblconfirm").removeClass("label label-danger").addClass("label label-success");
               // $("#lblconfirm").text("paid");
               // $("#btnpay").prop('disabled', true);

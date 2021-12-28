@@ -100,9 +100,9 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="inputError" class="control-label">Item Name Input By Hand</label>
+                        <div >
+                            <div class="form-group" style="display:none">
+                                <label for="inputError" class="control-label ">Item Name Input By Hand</label>
                                 <div class="col-sm-12">
                                     <input class="form-control input-sm handname" type="text" id="handname" name="handname" >
                                 </div>
@@ -136,6 +136,39 @@
                             </div>
                         </div>
 
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="inputError" class="control-label">Date From</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control input-sm datefrom" type="date" id="datefrom" name="datefrom" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="inputError" class="control-label">Date To</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control input-sm dateto" type="date" id="dateto" name="dateto" >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="inputError" class="control-label">Old Number</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control input-sm oldnum" type="text" id="oldnum" name="oldnum" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="inputError" class="control-label">New Number</label>
+                                <div class="col-sm-12">
+                                    <input class="form-control input-sm newnum" type="text" id="newnum" name="newnum" >
+                                </div>
+                            </div>
+                        </div>
                         
                     </div>
 
@@ -198,7 +231,12 @@
       <th class="yellow header headerSortDown">Quantity</th>
       <th class="yellow header headerSortDown">Price</th>
       <th class="yellow header headerSortDown">Discount</th>
+      <th class="yellow header headerSortDown">Date From</th>
+      <th class="yellow header headerSortDown">Date To</th>
+      <th class="yellow header headerSortDown">Old Number</th>
+      <th class="yellow header headerSortDown">New Number</th>
       <th class="yellow header headerSortDown">Total</th>
+     
       <th class="yellow header headerSortDown" colspan="2">Action</th>
     </tr>
   </thead>
@@ -217,6 +255,10 @@
                       echo "<td class='i-qty'>".$val->dqty."</td>";
                       echo "<td class='i-price'>".$val->dprice."</td>";
                       echo "<td class='i-dis'>".$val->discount."</td>";
+                      echo "<td class='i-datefrom'>".$val->datefrom."</td>";
+                      echo "<td class='i-dateto'>".$val->dateto."</td>";
+                      echo "<td class='i-oldnum'>".$val->oldnum."</td>";
+                      echo "<td class='i-newnum'>".$val->newnum."</td>";
                       echo "<td class='i-total'>".$val->amount."</td>";
                       echo "<td class='i-upd pointer' id='".$val->detail_id."' onclick='update(event)'><i class='fa fa-pencil-square-o' aria-hidden='true'></i>Edit</td>";
                       echo"<td class='i-del pointer' data='".$val->detail_id."' onclick='deleterow(event)'><i class='fa fa-times-circle' aria-hidden='true'></i>Delete</td>";
@@ -311,6 +353,10 @@
           $('.counter').val(counter);
       var  checkinid = $('.checkid').val(),
            temname = $('.itemname').val(),
+           datefrom = $('.datefrom').val(),
+           dateto = $('.dateto').val(),
+           oldnum = $('.oldnum').val(),
+           newnum = $('.newnum').val(),
            qty = $('.qty').val(),
            price = $('.price').val(),
            dis  =  $('.dis').val(),
@@ -336,6 +382,10 @@
         $('.store_item tr').each(function(){
             var iname = $(this).find('td.i-name').text(),
                 iqty = $(this).find('td.i-qty').text(),
+                idatefrom = $(this).find('td.i-datefrom').text(),
+                idateto = $(this).find('td.i-dateto').text(),
+                ioldnum = $(this).find('td.i-oldnum').text(),
+                inewnum = $(this).find('td.i-newnum').text(),
                 idis = $(this).find('td.i-dis').text(),
                 tot = $(this).find('td.i-total').text();
             if(iname == itemname)
@@ -347,8 +397,16 @@
                 $(this).find('td.i-qty').text(Number(qty) + Number(iqty));
                 $(this).find('td.i-dis').text(alldis);
                 $(this).find('td.i-total').text(last)+(last);
+                $(this).find('td.i-datefrom').text(idatefrom);
+                $(this).find('td.i-dateto').text(idateto);
+                $(this).find('td.i-oldnum').text(ioldnum);
+                $(this).find('td.i-newnum').text(inewnum);
 
                 $('.itemname').val('');
+                $('.datefrom').val('');
+                $('.dateto').val('');
+                $('.oldnum').val('');
+                $('.newnum').val('');
                 $('.qty').val('');
                 $('.price').val('');
                 $('.dis').val(0);
@@ -374,6 +432,10 @@
                               "<td class='i-qty'>"+ qty +"</td>"+
                               "<td class='i-price'>"+ price +"</td>"+
                               "<td class='i-dis'>"+ dis +"</td>"+
+                              "<td class='i-datefrom'>"+ datefrom +"</td>"+
+                              "<td class='i-dateto'>"+ dateto +"</td>"+
+                              "<td class='i-oldnum'>"+ oldnum +"</td>"+
+                              "<td class='i-newnum'>"+ newnum +"</td>"+
                               "<td class='i-total'>"+ total +"</td>"+
                               "<td class='i-upd pointer' onclick='update(event)'><i class='fa fa-pencil-square-o' aria-hidden='true'></i>Edit</td>"+
                               "<td class='i-del pointer' onclick='deleterow(event)'><i class='fa fa-times-circle' aria-hidden='true'></i>Delete</td>"+
@@ -382,6 +444,10 @@
         
 
        $('.itemname').val('');
+       $('.datefrom').val('');
+       $('.dateto').val('');
+       $('.oldnum').val('');
+       $('.newnum').val('');
        $('.qty').val('');
        $('.price').val('');
        $('.dis').val(0);
@@ -408,6 +474,10 @@
             var id = $(this).find('td.i-checkin').text(),
                 name = $(this).find('td.i-name').text(),
                 qty  = $(this).find('td.i-qty').text(),
+                datefrom  = $(this).find('td.i-datefrom').text(),
+                dateto  = $(this).find('td.i-dateto').text(),
+                oldnum  = $(this).find('td.i-oldnum').text(),
+                newnum  = $(this).find('td.i-newnum').text(),
                 price= $(this).find('td.i-price').text(),
                 dis  = $(this).find('td.i-dis').text(),
                 total= $(this).find('td.i-total').text(),
@@ -429,6 +499,10 @@
                     qty: qty,
                     price: price,
                     dis: dis,
+                    datefrom: datefrom,
+                    dateto: dateto,
+                    oldnum: oldnum,
+                    newnum: newnum,
                     total: total,
                     did: did
                   },
@@ -464,6 +538,10 @@
         var  checkinid = $('.checkid').val(),
            temname = $('.itemname').val(),
            qty = $('.qty').val(),
+           datefrom = $('.datefrom').val(),
+           dateto = $('.dateto').val(),
+           oldnum = $('.oldnum').val(),
+           newnum = $('.newnum').val(),
            price = $('.price').val(),
            dis  =  $('.dis').val(),
            total = $('.itotal').val(),
@@ -491,6 +569,10 @@
                                 "<td class='i-name'>"+ itemname +"</td>"+
                                 "<td class='i-qty'>"+ qty +"</td>"+
                                 "<td class='i-price'>"+ price +"</td>"+
+                                "<td class='i-datefrom'>"+ datefrom +"</td>"+
+                                "<td class='i-dateto'>"+ dateto +"</td>"+
+                                "<td class='i-oldnum'>"+ oldnum +"</td>"+
+                                "<td class='i-newnum'>"+ newnum +"</td>"+
                                 "<td class='i-dis'>"+ dis +"</td>"+
                                 "<td class='i-total'>"+ total +"</td>"+
                                 "<td class='i-upd pointer' onclick='update(event)'><i class='fa fa-pencil-square-o' aria-hidden='true'></i>Edit</td>"+
@@ -501,6 +583,10 @@
 
         $('.itemname').val('');
         $('.detailid').val('');
+        $('.datefrom').val('');
+        $('.dateto').val('');
+        $('.oldnum').val('');
+        $('.newnum').val('');
         $('.qty').val('');
         $('.price').val('');
         $('.dis').val(0);
@@ -551,6 +637,10 @@
           i_qty = $(event.target).closest('tr').find('.i-qty').text(),
           i_price = $(event.target).closest('tr').find('.i-price').text(),
           i_dis = $(event.target).closest('tr').find('.i-dis').text(),
+          i_datefrom = $(event.target).closest('tr').find('.i-datefrom').text(),
+          i_dateto = $(event.target).closest('tr').find('.i-dateto').text(),
+          i_oldnum = $(event.target).closest('tr').find('.i-oldnum').text(),
+          i_newnum = $(event.target).closest('tr').find('.i-newnum').text(),
           i_total = $(event.target).closest('tr').find('.i-total').text(),
           i_counter = $(event.target).closest('tr').find('.i-id').text(),
           i_did = $(event.target).closest('tr').find('.i-did').text();
@@ -560,6 +650,10 @@
       $('.qty').val(i_qty);
       $('.price').val(i_price);
       $('.dis').val(i_dis);
+      $('.datefrom').val(i_datefrom);
+      $('.dateto').val(i_dateto);
+      $('.oldnum').val(i_oldnum);
+      $('.newnum').val(i_newnum);
       $('.itotal').val(i_total);
       $('.counter').val(i_counter);
       $('.detailid').val(i_did);

@@ -90,7 +90,7 @@
                           <div> <a style="color:yellow" href="customer/view/<?php echo $has_reservation->cid  ?>"> Customer : <b><?php echo $has_reservation->family; ?></b></a></div>
                             <div>Phone : <b><?php echo $has_reservation->mobile; ?></b></div>
                             <div>Gender : <b><?php echo $has_reservation->gender; ?></b></div>
-                            <div>Date In : <b><?php echo $has_reservation->checkin_data; ?></b></div>
+                            <div>Date In : <b><?php echo $has_reservation->reservation_date; ?></b></div>
                             <!-- <div>Date Out : <b><?php echo $has_reservation->checkout_data; ?></b></div> -->
                           </div>
                         </div>

@@ -17,7 +17,7 @@
                       </div>
                   </div>
                   <div class="col-sm-4">
-                    <label for="">From Date</label>
+                    <label for="">To Date</label>
                       <div class="input-group date input-append" id="fromdatetime" style="width: 100%;">
                         <span class="input-group-addon add-on"><span class="fa fa-calendar"></span></span>
                         <input style="width: 100%;" type="text" class="form-control to_date" value="<?php echo $to_date ;?>" name="to_date" class="form_datetime" id="to_date"/>
@@ -81,7 +81,7 @@
         <div>
             <?php date_default_timezone_set("Asia/Phnom_penh"); ?>
             <div class="row" style="text-align: center;">
-              <img class="" src="<?php echo site_url('assets/images/domnakneak1.png'); ?>" alt="Palm River Hotel" style='text-align: center; clear: both;margin-top:-20px;'>
+              <!-- <img class="" src="<?php echo site_url('assets/images/domnakneak1.png'); ?>" alt="Palm River Hotel" style='text-align: center; clear: both;margin-top:-20px;'> -->
 
             </div>
             <div class="row">

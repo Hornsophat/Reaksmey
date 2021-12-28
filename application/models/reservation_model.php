@@ -58,14 +58,15 @@ class Reservation_model extends CI_Model {
 		$this->db->join('tbl_multireservation','tbl_multireservation.reserv_id = tbl_reservation.id','left');
 
 		if($search_string){
-			$this->db->like('Family', $search_string);
+			$this->db->like('checkin_data', $search_string);
+			
 		}
 		$this->db->group_by('tbl_reservation.id');
 
 		if($order){
 			$this->db->order_by('tbl_reservation.' . $order, $order_type);
 		}else{
-		    $this->db->order_by('tbl_reservation.id', $order_type);
+		    $this->db->order_by('tbl_reservation.checkin_data', $order_type,'DESC');
 		}
 
         if($limit_start && $limit_end){
@@ -113,38 +114,50 @@ class Reservation_model extends CI_Model {
     */
     function store_reservation($data)
     {
-	    $insert = $this->db->insert('tbl_reservation', $data);
-	    $id = $this->db->insert_id();
-	    if($data['deposit'] > 0){
-	    	$payment_data = [
-	            'reserva_id'    => $id,
-	            'user_name'       => $this->session->userdata('user_name'),
-	            'date'          => date('Y-m-d H:i:s'),
-	            'deposit'       => $data['deposit'],
-	            'discount'       => $data['discount'],
-	            'total'         => $data['total_price'],
-	            'grand_total'   => $data['grand_total']
-
-	        ];
-	        if($payment_data){
-	        	$payment = $this->db->insert('tbl_payments', $payment_data);
-	        	$payment_id = $this->db->insert_id();
-	        	$payment_detail_data[] = [
-	                                        'payment_id'        => $payment_id,
-	                                        'checkindetail_id'  => null,
-	                                        'room_id'           => null,
-	                                        'sale_id'           => null,
-	                                        'item_name'         => 'Deposit From reserva ('.$id.')',
-	                                        'status'            => 'deposit',
-	                                        'amount'            => str_replace(',', '', number_format($data['deposit'],2))
-	                                    ];
-	        	$this->db->insert_batch('tbl_payment_detail',$payment_detail_data);
+		$duration= $data['duration'];
+		$id = 0;
+		for($i=0; $i<=$duration;$i++){
+			$data['duration'] = 1;
+			$data['grand_total'] = $data['total_price'];
+			$data['checkin_data'] =date("Y-m-d",strtotime('-'.$i. 'month',strtotime($data['checkout_data'])));;
+			
+			// $x = strtotime($data['checkin_data']);
+			// $n = date("Y-m-d",strtotime("+1 month",$x));
+			// $data['checkout_data'] =$data['checkout_data'];
+			$insert = $this->db->insert('tbl_reservation', $data);
+			$id = $this->db->insert_id();
+			if($data['deposit'] > 0){
+				$payment_data = [
+					'reserva_id'    => $id,
+					'user_name'       => $this->session->userdata('user_name'),
+					'date'          => date('Y-m-d H:i:s'),
+					'deposit'       => $data['deposit'],
+					'discount'       => $data['discount'],
+					'total'         => $data['price'],
+					'grand_total'   => $data['grand_total']
+	
+				];
+				// if($payment_data){
+				// 	$payment = $this->db->insert('tbl_payments', $payment_data);
+				// 	$payment_id = $this->db->insert_id();
+				// 	$payment_detail_data[] = [
+				// 								'payment_id'        => $payment_id,
+				// 								'checkindetail_id'  => null,
+				// 								'room_id'           => null,
+				// 								'sale_id'           => null,
+				// 								'item_name'         => 'Deposit From reserva ('.$id.')',
+				// 								'status'            => 'deposit',
+				// 								'amount'            => str_replace(',', '', number_format($data['deposit'],2))
+				// 							];
+				// 	$this->db->insert_batch('tbl_payment_detail',$payment_detail_data);
+			   
+				// }
 	        }
 	    }
 		    
 
 
-	    return $insert;
+	    return true;
 	}
 
 	function store_multireservationo($room_det,$data_to_store){

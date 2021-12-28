@@ -34,10 +34,10 @@
       <div class="wrap-login100">
         <form class="login100-form validate-form" action="<?php echo base_url(); ?>user/validate_credentials" method="POST">
            <span style="font-family:Khmer OS Muol Light;font-size:35px;" class="login100-form-title p-b-43">
-            WELCOME ROTHSINGVILLA HOTEL
+           សូមស្វាគមន៍ ទិត្យ ឆារ៉ា អាផាតមែន
           </span>
           <span class="login100-form-title p-b-43">
-            Login to continue
+          Tith Chhara Apartment System
           </span>
           <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
             <input class="input100" type="text" name="user_name">
@@ -94,7 +94,7 @@
           ?>
         </form>
 
-        <div class="login100-more" style="background-image: url('<?php echo base_url(); ?>assets/login/images/photo_2021-02-01_07-59-25.jpg');">
+        <div class="login100-more" style="background-image: url('<?php echo base_url(); ?>assets/login/images/chhanra.JPG');">
         </div>
       </div>
     </div>

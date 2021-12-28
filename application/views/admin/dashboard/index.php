@@ -34,16 +34,19 @@
                         <div class="col-xs-3">
                             <span class="glyphicon glyphicon-big glyphicon-time"></span>
                         </div>
-                        <div class="col-xs-9 text-right">
+                        <div class="col-xs-12 text-right">
                             <div class="time"><?php echo date("Y/m/d"); ?></div>
                             </br>
                             <div><?php echo date_default_timezone_get();  ?></div>
+                            
+                            <div class="huge"><?php echo $total_checkin; ?></div>
+                            <div><?php echo lang('rooms');  ?></div>
                         </div>
                     </div>
                 </div>
-                     <a href="<?php echo site_url('admin/report/daily'); ?>">
+                     <a href="<?php echo site_url('admin/report/today-checkin'); ?>">
                     <div class="panel-footer">
-                        <span class="pull-left"><?php echo lang('Full Date'); ?></span>
+                        <span class="pull-left">ចំនួនបន្ទប់ត្រូវបង់ប្រាក់ក្នុងខែនិង</span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                         <div class="clearfix"></div>
                     </div>
@@ -51,11 +54,11 @@
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="panel panel-default">
+            <div class="panel panel-success">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-3">
-                            <i class="fa fa-5x fa-bed"></i>
+                            <i class="fa fa-5x fa-building"></i>
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge"><?php echo $total_rooms; ?></div>
@@ -63,17 +66,74 @@
                         </div>
                     </div>
                 </div>
+             
                 <a href="<?php echo site_url('admin/show_rooms'); ?>">
                     <div class="panel-footer">
-                        <span class="pull-left"><?php echo lang('all room'); ?></span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <span class="pull-left">Ground Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $ground_rooms; ?> </i><?php echo lang('rooms');  ?></span>
+                        <div class="clearfix"> </div>
+                    </div>
+                </a>
+                <a href="<?php echo site_url('admin/first_floor'); ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">First Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $first_rooms; ?> </i><?php echo lang('rooms');  ?></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+                <a href="<?php echo site_url('admin/second_floor'); ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Second Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $second_rooms; ?> </i><?php echo lang('rooms');  ?></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+                <a href="<?php echo site_url('admin/third_floor'); ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Third Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $third_rooms; ?> </i><?php echo lang('rooms');  ?></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+                <a href="<?php echo site_url('admin/four_floor'); ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Four Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $four_rooms; ?> </i><?php echo lang('rooms');  ?></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+                <a href="<?php echo site_url('admin/five_floor'); ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Five Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $five_rooms; ?> </i><?php echo lang('rooms');  ?></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+                <a href="<?php echo site_url('admin/six_floor'); ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Six Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $six_rooms; ?> </i><?php echo lang('rooms');  ?></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+                <a href="<?php echo site_url('admin/seven_floor'); ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Seven Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $seven_rooms; ?> </i><?php echo lang('rooms');  ?></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+                <a href="<?php echo site_url('admin/eight_floor'); ?>">
+                    <div class="panel-footer">
+                        <span class="pull-left">Eight Floor</span>
+                        <span class="pull-right" style="font-size:15px"><?php echo $eight_rooms; ?> </i><?php echo lang('rooms');  ?></span>
                         <div class="clearfix"></div>
                     </div>
                 </a>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
-            <div class="panel panel-green">
+            <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-xs-3">
@@ -102,11 +162,11 @@
                         </div>
                         <div class="col-xs-9 text-right">
                             <div class="huge"><?php echo $today_reserv ; ?></div>
-                            <div><?php echo lang('Today Check-In'); ?></div>
+                            <div>អតិថិជនដល់ថ្ងៃបង់ប្រាក់ និងគិតទាំងសម្ភារ </div>
                         </div>
                     </div>
                 </div>
-                <a href="<?php echo base_url(); ?>admin/report/today-checkin">
+                <a href="<?php echo base_url(); ?>admin/report/unpay">
                     <div class="panel-footer">
                         <span class="pull-left"><?php echo lang('View Details'); ?></span>
                         <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>

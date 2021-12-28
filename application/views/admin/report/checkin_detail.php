@@ -17,7 +17,7 @@
                       </div>
                   </div>
                   <div class="col-sm-3 hide">
-                    <label for="">From Date</label>
+                    <label for="">To Date</label>
                       <div class="input-group date input-append" id="fromdatetime" style="width: 100%;">
                         <span class="input-group-addon add-on"><span class="fa fa-calendar"></span></span>
                         <input style="width: 100%;" type="text" class="form-control to_date" value="<?php echo $to_date ;?>" name="to_date" class="form_datetime" id="to_date"/>

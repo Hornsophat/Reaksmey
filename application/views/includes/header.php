@@ -51,7 +51,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background: #084e92;">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="<?php echo site_url('admin/dashboard')?>"><?php echo lang('PRH');?><img src="<?php echo site_url('assets/images/domnakneak1.png')?>" style="width: 60px; margin-top: -15px;"></a>
+          <!-- <a class="navbar-brand" href="<?php echo site_url('admin/dashboard')?>"><?php echo lang('PRH');?><img src="<?php echo site_url('assets/images/imagelogo.png')?>" style="width: 60px; margin-top: -20px;"></a> -->
         </div>
         
         <div class="navbar-right">
@@ -60,12 +60,13 @@
           <ul class="nav navbar-nav">
 	        
 	        <!-- notic dorpdown -->
-	         <li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-bell"></span> <b class="caret"></b></a>
+	         <!-- <li class="dropdown">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-bell">  <span class="number bred black"><?= $qty_alert_num+(($Settings->product_expiry) ? $exp_alert_num : 0)+$shop_sale_alerts+$shop_payment_alerts+($payment_alert_num[0]->cus_qty); ?></span></span> <b class="caret"></b>
+                              </a>
 	          <ul class="dropdown-menu">
-	            
+			  
 	          </ul>
-	        </li>
+	        </li> -->
 	        <!-- End notic dorpdown -->
 	        
 	        <!-- Tasks dorpdown -->
@@ -107,14 +108,17 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
+		  <li <?php if($this->uri->segment(2) == 'reservation'){echo 'class="active"';}?>>
+		          <a href="<?php echo base_url(); ?>admin/dashboard"> Dashboard</a>
+		        </li>
           	<?php if($this->lib_permission->checkactionexist('admin/reservation')){ ?>
 				<li <?php if($this->uri->segment(2) == 'reservation'){echo 'class="active"';}?>>
-		          <a href="<?php echo base_url(); ?>admin/reservation"><?php echo lang('Reservation');?></a>
+		          <a href="<?php echo base_url(); ?>admin/reservation"> Rent Room</a>
 		        </li>
           	<?php } if($this->lib_permission->checkactionexist('admin/checkin')){ ?>
 
 		        <li <?php if($this->uri->segment(2) == 'checkin'){echo 'class="active"';}?>>
-		          <a href="<?php echo base_url(); ?>admin/checkin"><?php echo lang('Checkin'); ?></a>
+		          <a href="<?php echo base_url(); ?>admin/checkin">Payment</a>
 		        </li>
           	<?php } if($this->lib_permission->checkactionexist('admin/checkout')){ ?>
 
@@ -132,9 +136,9 @@
 		          <a href="<?php echo base_url(); ?>admin/item"><?php echo lang('Additem'); ?></a>
 		        </li>
 	        <?php } if($this->lib_permission->checkactionexist('admin/cleaning')){ ?>
-		        <li id="<?php echo $hide?>" <?php if($this->uri->segment(2) == 'cleaning'){echo 'class="active"';}?>>
+		        <!-- <li id="<?php echo $hide?>" <?php if($this->uri->segment(2) == 'cleaning'){echo 'class="active"';}?>>
 		          <a href="<?php echo base_url(); ?>admin/cleaning"><?php echo lang('Cleaning'); ?></a>
-		        </li>
+		        </li> -->
 	        <?php }?>
 
 	        
@@ -185,6 +189,8 @@
 	        				<a href="<?php echo base_url(); ?>admin/report/Busy-room"><span class="glyphicon glyphicon-print"></span> <?php echo lang('Busy Rooms Report');?></a>
 	        			<?php } if($this->lib_permission->checkactionexist('admin/report/payment_report')){ ?>
 	        				<a href="<?php echo base_url(); ?>admin/report/payment_report"><span class="glyphicon glyphicon-list-alt"></span> <?php echo lang('payment_report');?></a>
+						<?php }if($this->lib_permission->checkactionexist('admin/report/payment_report')){ ?>
+	        				<a href="<?php echo base_url(); ?>admin/report/item_report"><span class="glyphicon glyphicon-list-alt"></span> Item Report</a>	
 	        			<?php } if($this->lib_permission->checkactionexist('admin/report/payment_report')){ ?>
 	        				<a href="<?php echo base_url(); ?>admin/report/banks"><span class="glyphicon glyphicon-list-alt"></span> <?php echo lang('bank_report');?></a>
 	        			<?php } if($this->lib_permission->checkactionexist('admin/report/report_room_by_date')){ ?>
@@ -218,21 +224,21 @@
 		            <li>
 		              <a href="<?php echo base_url(); ?>admin/room"><span class="glyphicon glyphicon-list-alt"></span> <?php echo lang('Rooms');?></a>
 		            </li>
-	            <?php } if($this->lib_permission->checkactionexist('currencies')){ ?>
+	            <?php } if($this->lib_permission->checkactionexist('admin_currencies')){ ?>
 		            <li>
-		            	<a href="<?php echo base_url(); ?>currencies"><span class="glyphicon glyphicon-usd"></span> <?php echo lang('Currencies');?></a>
+		            	<a href="<?php echo base_url(); ?>admin_currencies"><span class="glyphicon glyphicon-usd"></span> <?php echo lang('Currencies');?></a>
 		            </li>
-	            <?php } if($this->lib_permission->checkactionexist('currencies/exspanse_type_insert')){ ?>
+	            <?php } if($this->lib_permission->checkactionexist('admin_currencies/exspanse_type_insert')){ ?>
 		            <li>
 		            	<a href="#" data-toggle="modal" data-target="#expense_types"><span class="glyphicon glyphicon-usd"></span> <?php echo lang('expense_type');?></a>
 		            </li>
-	            <?php } if($this->lib_permission->checkactionexist('currencies/expense_list')){ ?>
+	            <?php } if($this->lib_permission->checkactionexist('admin_currencies/expense_list')){ ?>
 		            <li>
-		            	<a href="<?php echo base_url(); ?>currencies/expense_list"><span class="glyphicon glyphicon-usd"></span> <?php echo lang('add_expense');?></a>
+		            	<a href="<?php echo base_url(); ?>admin_currencies/expense_list"><span class="glyphicon glyphicon-usd"></span> <?php echo lang('add_expense');?></a>
 		            </li>
-	            <?php } if($this->lib_permission->checkactionexist('currencies/add_bank')){ ?>
+	            <?php } if($this->lib_permission->checkactionexist('admin_currencies/add_bank')){ ?>
 		            <li>
-		            	<a href="<?php echo base_url(); ?>currencies/add_bank"><span class="glyphicon glyphicon-usd"></span> <?php echo lang('add_bank');?></a>
+		            	<a href="<?php echo base_url(); ?>admin_currencies/add_bank"><span class="glyphicon glyphicon-usd"></span> <?php echo lang('add_bank');?></a>
 		            </li>
 	            <?php } if($this->lib_permission->checkactionexist('admin/cleaning/addHoliday')){ ?>
 		            <li>
@@ -380,7 +386,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="<?php echo base_url('currencies/exspanse_type_insert');?>" method="post">
+      <form action="<?php echo base_url('admin_currencies/exspanse_type_insert');?>" method="post">
       <div class="modal-body">
         <div class="row">
         	<div class="col-md-12">

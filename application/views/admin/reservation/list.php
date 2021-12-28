@@ -21,18 +21,17 @@
     }
   ?>
       <ul class="breadcrumb">
-        <li><a href="<?php echo site_url("admin"); ?>">Reservation </a></li>
-        <li class="active">List Reservation</li>
+        <li><a href="<?php echo site_url("admin"); ?>">List Staying </a></li>
+        <li class="active">List Staying</li>
       </ul>
 
       <div class="page-header users-header">
         <h2>
-          List Reservation
-          <a style="margin-left: 10px;" href="<?php echo site_url('admin/reservation/add_multi')?>" class="btn btn-sm btn-success"><?php echo lang('Add Multi');?></a> 
+         List Staying
+          <!-- <a style="margin-left: 10px;" href="<?php echo site_url('admin/reservation/add_multi')?>" class="btn btn-sm btn-success"><?php echo lang('Add Multi');?></a>  -->
           <a style="margin-left: 10px;" href="<?php echo site_url('admin/reservation/add')?>" class="btn btn-sm btn-success"><?php echo lang('Add a new');?></a>
         </h2>
       </div>
-      
       <div class="row">
         <div class="span12 columns col-sm-12">
           <div class="well">
@@ -49,10 +48,12 @@
               break;
             }
 
+            
+
             echo form_open('admin/reservation', $attributes);
      
               echo form_label(lang('Search:'), 'search_string');
-              echo form_input('search_string', $search_string_selected,'class="form-control" placeholder="'.lang('search customer').'"');
+              echo form_input('search_string', $search_string_selected,'class="form-control"  placeholder="ថ្ងៃបង់ប្រាក់"');
 
               echo form_label(lang('Order by:'), 'order');
               echo form_dropdown('order', $options_reservation, $order, 'class="span2 form-control"');
@@ -69,19 +70,21 @@
 
           </div>
 
-          <table class="table table-striped table-bordered table-condensed">
+          <table class="table table-striped table-bordered table-condensed" style="white-space: nowrap;">
             <thead>
               <tr>
-                <th class="header">#</th>
+                <th> <input type="checkbox"></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Customer');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Phone Number');?></th>
                 <!-- <th class="yellow header headerSortDown"><?php echo lang('Room Type');?></th> -->
                 <th class="yellow header headerSortDown"><?php echo lang('Room Number');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Reservation Type');?></th>
-                <th class="yellow header headerSortDown"><?php echo lang('Checkin');?></th>
-                <th class="yellow header headerSortDown"><?php echo lang('Checkout');?></th>
+                <!-- <th class="yellow header headerSortDown"><?php echo lang('Checkin');?></th>
+                <th class="yellow header headerSortDown"><?php echo lang('Checkout');?></th> -->
+                <th class="yellow header headerSortDown">ថ្ងៃបង់ប្រាក់</th>
                 <th class="yellow header headerSortDown"><?php echo lang('Duration');?></th>
-                <th class="yellow header headerSortDown"><?php echo lang('Reservation Date');?></th>
+                <th class="yellow header headerSortDown"><?php echo lang('Price');?></th>
+                <!-- <th class="yellow header headerSortDown"><?php echo lang('Deposit');?></th> -->
                 <th class="yellow header headerSortDown"><?php echo lang('Confirmed');?></th>
                 <th class="yellow header headerSortDown"><?php echo lang('Action');?></th>
               </tr>
@@ -113,32 +116,39 @@
                 }else{
                   $onclick = '';
                 }
-
+                if( $row['confirmed'] != 1 ){
                 echo '<tr>';
-                echo '<td '.$onclick.'>'.$currentserialnumber++.'</td>';
+                echo '<td '.$onclick.'><input type="checkbox" value="'.$row['id'].'" name="ch_out" id="ch_out" class="ch_out"></td>';
+                // echo '<td '.$onclick.'>'.$currentserialnumber++.'</td>';
                 echo '<td '.$onclick.'>'.$row['Family'].'</td>';
                 echo '<td '.$onclick.'>'.$row['Mobile'].'</td>';
-                // $room_type = [];
-                // if($row['is_multy'] == 1){
-                //   $id = $row['id'];
-                //   $room_types = $this->db->query("SELECT r_type.type FROM tbl_multireservation m_re INNER JOIN tbl_room room ON m_re.room_id = room.id INNER JOIN tbl_roomtype r_type ON room.type_id = r_type.id WHERE m_re.reserv_id = '$id' GROUP BY r_type.id")->result_array();
+                $room_type = [];
+                if($row['is_multy'] == 1){
+                  $id = $row['id'];
+                  $room_types = $this->db->query("SELECT r_type.type FROM tbl_multireservation m_re INNER JOIN tbl_room room ON m_re.room_id = room.id INNER JOIN tbl_roomtype r_type ON room.type_id = r_type.id WHERE m_re.reserv_id = '$id' GROUP BY r_type.id")->result_array();
                   
-                //   foreach ($room_types as $type) {
-                //       $room_type[] = $type->type;
-                //       $room_t = implode(',',$room_type);
-                //   }
-                //   echo '<td>'.$room_t.'</td>';
-                //   echo '<td>'.$ro_number.'</td>';
-                // }else{
-                //   echo '<td>'.$row['room_type'].'</td>';
-                //   echo '<td>'.$ro_number.'</td>';
-                // }
-                echo '<td '.$onclick.'>'.$ro_number.'</td>';
+                  foreach ($room_types as $type) {
+                      $room_type[] = $type->type;
+                      $room_t = implode(',',$room_type);
+                  }
+                  // echo '<td>'.$room_t.'</td>';
+                  // echo '<td>'.$ro_number.'</td>';
+                }else{
+                  echo '<td>'.$row['room_type'].'</td>';
+                  // echo '<td>'.$ro_number.'</td>';
+                }
+                // echo '<td '.$onclick.'>'.$ro_number.'</td>';
                 echo '<td '.$onclick.'>'.$row['time'].'</td>';
-                echo '<td '.$onclick.'>'.$row['checkin_data'].'</td>';
-                echo '<td '.$onclick.'>'.$row['checkout_data'].'</td>';
+                // echo '<td '.$onclick.'>'.$row['reservation_date'].'</td>';
+                // echo '<td '.$onclick.'>'.$row['checkout_data'].'</td>';
+                if($row['checkin_data'] == date('Y-m-d')){
+                echo '<td style="background-color:rgb(255, 139, 135)" '.$onclick.'>'.$row['checkin_data'].'</td>';
+                }else{
+                  echo '<td '.$onclick.'>'.$row['checkin_data'].'</td>';
+                }
                 echo '<td '.$onclick.'>'.$row['duration'].'</td>';
-                echo '<td '.$onclick.'>'.$row['reservation_date'].'</td>';
+                echo '<td '.$onclick.'>'.$row['price'].'</td>';
+                // echo '<td '.$onclick.'>'.$row['deposit'].'</td>';
                 if ($row['confirmed']==0 AND ($row['canceled'])==0)
                 {
                   echo '<td style="text-align:center;"><span class="label label-danger" id="' . $row['id'] . '">Not Confirmed</span></td>';
@@ -170,20 +180,20 @@
                 echo " " ;
                 echo 
                   '<a  href="'.site_url("admin").'/reservation/update/'.$row['id'].'" style="display:none;" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit & View" id="btnEdit"><span class="glyphicon glyphicon-edit"></span></a>
-                  <a onclick="return confirm('."'Are you sure you want to delete this item?'".');" href="'.site_url("admin").'/reservation/delete/'.$row['id'].'" class="btn btn-sm btn-danger '.$hide.'" data-toggle="tooltip" title="Delete" id="btnDel"><span class="glyphicon glyphicon-trash"></span></a>';
+                  <a href="'.site_url("admin").'/reservation/delete/'.$row['id'].'" class="btn btn-sm btn-danger '.$hide.'" data-toggle="tooltip" title="Delete" id="btnDel"><span class="glyphicon glyphicon-trash"></span></a>';
                
               // echo  '<a class="btn btn-sm btn-danger" disabled data-toggle="tooltip" title="Confirm" id="btnVerify"><span class="glyphicon glyphicon-minus-sign"></span></a>';
 
               echo '</td>';
                 echo '</tr>';
-
+              }
 
               }
               ?>      
             </tbody>
           </table>
 
-          <?php echo $this->pagination->create_links(); ?>
+          <!-- <?php echo $this->pagination->create_links(); ?> -->
 
       </div>
     </div>
@@ -241,11 +251,11 @@
              success: function (result) {
               if (result == 'true') {
                     try{
-                console.log(result);
+                 console.log(result);
                       $('#' + id).removeClass('label label-danger').addClass('label label-success');
                       $('#' + id).text("Confirmed") ;
-                      alert("Success Confirmed !");
-                      window.location.href='<?php echo base_url("admin/checkin")?>';
+                      // alert("Success Confirmed !");
+                      // window.location.href='<?php echo base_url("admin/checkin")?>';
                     }catch(e) {   
                     alert('Exception while request..');
 
@@ -270,7 +280,7 @@
     $.ajax({
        type: "get",
        dataType : 'json',
-           url:"<?php echo site_url()?>admin/view_reservation", 
+          //  url:"<?php echo site_url()?>admin/view_reservation", 
            data: {reservation_id : id},
            async:false,
            success: function (result) {

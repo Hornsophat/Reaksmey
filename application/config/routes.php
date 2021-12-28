@@ -56,6 +56,7 @@ $route['admin/customer/search'] = 'admin_customer/search';
 $route['admin/customer/show/(:any)'] = 'admin_customer/get_customer/$1';
 $route['admin/customer/verify'] = 'admin_customer/verify';
 $route['admin/customer/add'] = 'admin_customer/add';
+$route['admin/customer/view/(:any)'] = 'admin_customer/view/$1';
 $route['admin/customer/update'] = 'admin_customer/update';
 $route['admin/customer/update/(:any)'] = 'admin_customer/update/$1';
 $route['admin/customer/delete/(:any)'] = 'admin_customer/delete/$1';
@@ -99,6 +100,7 @@ $route['admin/room/add'] = 'admin_room/add';
 $route['admin/room/update'] = 'admin_room/update';
 $route['admin/room/update/(:any)'] = 'admin_room/update/$1';
 $route['admin/room/delete/(:any)'] = 'admin_room/delete/$1';
+$route['admin/room/view/(:any)'] = 'admin_room/view/$1';
 $route['admin/room/(:any)'] = 'admin_room/index/$1'; //$1 = page number
 $route['admin/room/getPriceByDay'] = 'admin_staytime/getPriceByDay';
 
@@ -136,6 +138,7 @@ $route['admin/report/unpay'] = 'admin_report/unpay_report';
 $route['admin/report/profit-report'] = 'admin_report/profit_report';
 $route['admin/report/get-all-amount-in'] = 'admin_report/get_all_amount_in';
 $route['admin/report/payment_report'] = 'admin_report/payment_report/$1/$2';
+$route['admin/report/item_report'] = 'admin_report/item_report/$1/$2';
 $route['admin/report/report_room_by_date'] = 'admin_report/report_room_by_date/$1/$2';
 $route['admin/report/report_room_by_month'] = 'admin_report/report_room_by_month/$1/$2';
 
@@ -178,6 +181,14 @@ $route['admin/pay/(:any)'] = "admin_checkout/pay/$1";
 
 
 $route['admin/show_rooms'] = "admin_dashboard/view_rooms";
+$route['admin/first_floor'] = "admin_dashboard/first_floor";
+$route['admin/second_floor'] = "admin_dashboard/second_floor";
+$route['admin/third_floor'] = "admin_dashboard/third_floor";
+$route['admin/four_floor'] = "admin_dashboard/four_floor";
+$route['admin/five_floor'] = "admin_dashboard/five_floor";
+$route['admin/six_floor'] = "admin_dashboard/six_floor";
+$route['admin/seven_floor'] = "admin_dashboard/seven_floor";
+$route['admin/eight_floor'] = "admin_dashboard/eight_floor";
 $route['admin/show_rooms/reserv_cancel'] = "admin_dashboard/reserve_cancel";
 
 $route['admin/cleaning']  = "admin_cleaning/index";

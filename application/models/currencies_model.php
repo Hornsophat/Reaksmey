@@ -35,7 +35,10 @@
 			$this->db->update('tbl_currencies',$get_update);
 		}
 
-
+		function delete_ba($id){
+			$this->db->where('id',$id);
+			$this->db->delete('tbl_bank');
+		}
 		function delete_ex($id){
 			$this->db->where('id',$id);
 			$this->db->delete('tbl_expense');
